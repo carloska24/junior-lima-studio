@@ -1,0 +1,26 @@
+{
+  "name": "postgres-saas",
+  "type": "database-stack",
+  "description": "PostgreSQL database stack optimized for SaaS, multi-tenancy and performance.",
+
+  "decision_profile": {
+    "database_type": "relational",
+    "multi_tenant": true,
+    "workload": "transactional",
+    "scalability": "high",
+    "consistency": "strong"
+  },
+
+  "configuration": {
+    "engine": "postgresql",
+    "version": "15+",
+    "orm": "prisma",
+    "schema_strategy": "multi-schema"
+  },
+
+  "dependencies": ["pg", "prisma"],
+
+  "recommendedExtensions": ["uuid-ossp", "pg_trgm"],
+
+  "schemas": ["public", "auth", "app"]
+}

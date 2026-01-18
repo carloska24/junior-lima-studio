@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Admin/Staff users for the system
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String   // Hashed
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Client {
+  id           String        @id @default(uuid())
+  name         String
+  phone        String        @unique // Unique identifier often useful
+  email        String?
+  notes        String?
+  appointments Appointment[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@map("clients")
+}
+
+model Service {
+  id          String        @id @default(uuid())
+  name        String
+  description String?
+  price       Decimal       @db.Decimal(10, 2)
+  durationMin Int           // Duration in minutes
+  active      Boolean       @default(true)
+  appointments Appointment[] // Implicit many-to-many
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@map("services")
+}
+
+model Appointment {
+  id        String   @id @default(uuid())
+  date      DateTime // Start time
+  endDate   DateTime // End time (Calculated based on service duration)
+  
+  status    AppointmentStatus @default(PENDING)
+  notes     String?
+  
+  // Financial Snapshot
+  totalPrice Decimal? @db.Decimal(10, 2) // Stored at completion to preserve history
+
+  clientId  String
+  client    Client   @relation(fields: [clientId], references: [id])
+  
+  services  Service[] // Implicit many-to-many allows booking multiple services
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("appointments")
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELED
+  NO_SHOW
+}

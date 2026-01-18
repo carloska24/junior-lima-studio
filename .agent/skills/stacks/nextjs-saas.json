@@ -1,0 +1,48 @@
+{
+  "name": "nextjs-saas",
+  "type": "frontend-stack",
+  "description": "Production-ready frontend stack for SaaS using Next.js App Router with SEO and SSR.",
+
+  "decision_profile": {
+    "product_type": "saas",
+    "seo": true,
+    "public_access": true,
+    "interactivity": "medium-high",
+    "landing_page": true
+  },
+
+  "configuration": {
+    "framework": "nextjs",
+    "router": "app-router",
+    "language": "typescript",
+    "styling": "tailwindcss",
+    "deployment": "vercel",
+    "rendering": ["ssr", "ssg", "isr"]
+  },
+
+  "dependencies": [
+    "next",
+    "react",
+    "react-dom",
+    "zod",
+    "react-hook-form",
+    "@tanstack/react-query",
+    "lucide-react",
+    "clsx",
+    "tailwind-merge"
+  ],
+
+  "devDependencies": [
+    "typescript",
+    "@types/node",
+    "@types/react",
+    "@types/react-dom",
+    "tailwindcss",
+    "postcss",
+    "autoprefixer",
+    "eslint",
+    "eslint-config-next"
+  ],
+
+  "features": ["Server Components", "API Routes", "SEO Optimization", "Image Optimization"]
+}

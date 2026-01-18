@@ -1,0 +1,39 @@
+{
+  "name": "visual-style-resolver",
+  "description": "Seleciona automaticamente os padrões visuais adequados com base no tipo de produto e tom da marca.",
+  "decision_inputs": [
+    "tipo_de_produto",
+    "tipo_de_negocio",
+    "publico",
+    "tom_visual"
+  ],
+  "rules": [
+    {
+      "if": {
+        "tipo_de_negocio": ["barbearia", "salao"],
+        "publico": "premium"
+      },
+      "use_presets": [
+        "hero-centered",
+        "minimalist",
+        "bento-grid",
+        "motion-ui"
+      ]
+    },
+    {
+      "if": {
+        "tipo_de_produto": "dashboard"
+      },
+      "use_presets": [
+        "card-ui",
+        "data-first",
+        "dark-mode",
+        "motion-ui"
+      ]
+    }
+  ],
+  "fallback": [
+    "card-ui",
+    "minimalist"
+  ]
+}

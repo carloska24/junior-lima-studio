@@ -1,0 +1,38 @@
+{
+  "name": "react-vite-spa",
+  "description": "Modern Single Page Application stack using React, Vite, and TypeScript.",
+  "type": "frontend",
+  "dependencies": [
+    "react",
+    "react-dom",
+    "framer-motion",
+    "lucide-react",
+    "clsx",
+    "tailwind-merge"
+  ],
+  "devDependencies": [
+    "vite",
+    "@vitejs/plugin-react",
+    "typescript",
+    "tailwindcss",
+    "postcss",
+    "autoprefixer",
+    "eslint",
+    "eslint-plugin-react-hooks",
+    "eslint-plugin-react-refresh"
+  ],
+  "configuration": {
+    "framework": "react",
+    "buildTool": "vite",
+    "language": "typescript",
+    "styling": "tailwindcss"
+  },
+  "recommendedStructure": [
+    "src/components/ui",
+    "src/components/layout",
+    "src/hooks",
+    "src/utils",
+    "src/pages",
+    "src/types"
+  ]
+}
