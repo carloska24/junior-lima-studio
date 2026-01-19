@@ -61,7 +61,7 @@ export class UserController {
   }
 
   async toggleActive(req: Request, res: Response) {
-    const { id } = req.params;
+    const { id } = req.params as { id: string };
 
     if (id === req.userId) {
       return res.status(400).json({ error: 'Não é possível desativar o próprio usuário' });
