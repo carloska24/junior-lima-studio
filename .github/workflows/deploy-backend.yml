@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 env:
-  PROJECT_ID: junior-lima-studio-app
+  PROJECT_ID: junior-lima-studio-app-1da7b
   REGION: southamerica-east1
   SERVICE_NAME: junior-lima-api
 
