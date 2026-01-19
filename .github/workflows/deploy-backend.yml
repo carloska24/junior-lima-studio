@@ -6,6 +6,7 @@ on:
     paths:
       - 'backend/**'
       - '.github/workflows/deploy-backend.yml'
+      - 'prisma/**'
   workflow_dispatch:
 
 env:
@@ -16,7 +17,6 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     permissions:
       contents: 'read'
       id-token: 'write'
@@ -32,11 +32,9 @@ jobs:
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
-        with:
-          project_id: ${{ env.PROJECT_ID }}
 
-      - name: Authorize Docker push
-        run: gcloud auth configure-docker
+      - name: Configure Docker
+        run: gcloud auth configure-docker --quiet
 
       - name: Build and Push Container
         run: |
@@ -48,19 +46,15 @@ jobs:
         uses: google-github-actions/deploy-cloudrun@v2
         with:
           service: ${{ env.SERVICE_NAME }}
-          image: gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
           region: ${{ env.REGION }}
+          image: gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+          flags: '--allow-unauthenticated'
           env_vars: |
-            NODE_ENV=production
             DATABASE_URL=${{ secrets.DATABASE_URL_PRODUCTION }}
             JWT_SECRET=${{ secrets.JWT_SECRET }}
 
       - name: Run Migrations
         run: |
           cd backend
-          echo ${{ secrets.DATABASE_URL_PRODUCTION }} > .env
-          # Not ideal for production pipelines usually, but works for this scale
-          # npx prisma migrate deploy (requires env var or .env file)
-
-# Trigger retry
-# Retry after API enable
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL_PRODUCTION }}" > .env
+          npx prisma migrate deploy

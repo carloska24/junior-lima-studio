@@ -12,7 +12,6 @@ on:
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -24,14 +23,14 @@ jobs:
       - name: Install Dependencies
         run: |
           cd frontend
-          npm ci
+          npm install
 
-      - name: Build Project
+      - name: Build
         run: |
           cd frontend
           npm run build
         env:
-          VITE_API_URL: 'https://junior-lima-api-410975528187.southamerica-east1.run.app'
+          VITE_API_URL: https://junior-lima-api-1037879040596.southamerica-east1.run.app
 
       - name: Deploy to Firebase
         uses: FirebaseExtended/action-hosting-deploy@v0
@@ -40,5 +39,3 @@ jobs:
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_JUNIOR_LIMA_STUDIO_APP_1DA7B }}'
           channelId: live
           projectId: junior-lima-studio-app-1da7b
-# Trigger retry
-# Retry after API enable
