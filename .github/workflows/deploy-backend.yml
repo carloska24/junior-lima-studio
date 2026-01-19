@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 env:
-  PROJECT_ID: junior-lima-studio-app-1da7b
+  PROJECT_ID: junior-lima-studio-app
   REGION: southamerica-east1
   SERVICE_NAME: junior-lima-api
 
@@ -61,4 +61,5 @@ jobs:
           echo ${{ secrets.DATABASE_URL_PRODUCTION }} > .env
           # Not ideal for production pipelines usually, but works for this scale
           # npx prisma migrate deploy (requires env var or .env file)
+
 # Trigger retry

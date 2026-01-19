@@ -39,5 +39,5 @@ jobs:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_JUNIOR_LIMA_STUDIO_APP_1DA7B }}'
           channelId: live
-          projectId: junior-lima-studio-app-1da7b
+          projectId: junior-lima-studio-app
 # Trigger retry
