@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { apiFetch } from '@/services/api';
-import { Plus, Search, Shield, ShieldOff, MoreVertical, Trash2 } from 'lucide-react';
+import { Plus, Shield, ShieldOff } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
 interface User {
@@ -15,12 +15,7 @@ export function Users() {
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit, reset, reset } = useForm();
   const [error, setError] = useState('');
 
   useEffect(() => {

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { apiFetch } from '@/services/api';
 import { useForm } from 'react-hook-form';
-import { Save, Lock, User as UserIcon } from 'lucide-react';
+import { Save, Lock } from 'lucide-react';
 
 interface UserProfile {
   id: string;
