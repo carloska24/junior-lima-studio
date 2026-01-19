@@ -21,6 +21,10 @@ export class AuthController {
         return res.status(401).json({ error: 'Credenciais inválidas' });
       }
 
+      if (!user.active) {
+        return res.status(401).json({ error: 'Usuário desativado' });
+      }
+
       const token = jwt.sign({ id: user.id, email: user.email }, AUTH_SECRET, {
         expiresIn: '1d',
       });

@@ -1,144 +1,52 @@
-# Implementation Plan: Júnior Lima Hair Artist
+# Implementation Plan - Phase 6: User Management (Admin)
 
-# Goal Description
+## Goal
 
-Create a premium, sophisticated web platform for "Júnior Lima Hair Artist". The solution will consist of a high-conversion public Landing Page and a private Management System for salon operations. The aesthetic must be elegant, avoiding "tech/cyberpunk" tropes in favor of minimalist luxury.
+Implement a complete User Management system for administrators, including profile management, password updates, and CRUD operations for other admin users.
 
-## User Review Required
+## Proposed Changes
 
-> [!IMPORTANT]
-> **Aesthetics**: Please confirm the proposed "Midnight & Gold" color palette.
-> **Tech Stack**: Proposing React + Vite for high performance.
-> **Database**: PostgreSQL + Prisma (Strict adherence to postgres-saas stack).
+### 1. Database
 
-## Architecture
+- **`backend/prisma/schema.prisma`**
+  - Add `active Boolean @default(true)` to `User` model to allow activating/deactivating users.
 
-### Tech Stack
+### 2. Backend
 
-- **Frontend**: React (v18+), TypeScript, Vite
-- **Styling**: Tailwind CSS (configured with custom typography and color tokens)
-- **Icons**: Lucide React (thin, elegant strokes)
-- **Animation**: Framer Motion (for smooth, high-end transitions)
-- **State Management**: React Context API & Hooks (Strictly no external state libraries)
+- **`backend/src/routes/user.routes.ts`** (New File)
+  - `GET /me`: Return current user profle.
+  - `PUT /me/password`: Update current user password.
+  - `GET /`: List all users (Admin only).
+  - `POST /`: Create new user (Admin only).
+  - `PUT /:id/toggle-active`: Activate/Deactivate user (Admin only).
+- **`backend/src/controllers/UserController.ts`** (New File)
+  - Implement methods for the routes above.
+- **`backend/src/middleware/auth.ts`** (Verify/Create)
+  - Ensure JWT authentication middleware is robust and reusable for these routes.
+- **`backend/src/routes/index.ts`**
+  - Register `userRoutes` under `/users`.
 
-### High-Level Structure
+### 3. Frontend
 
-```mermaid
-graph TD
-    Client[Client Browser]
-
-    subgraph "Frontend Application"
-        LP[Landing Page (Public)]
-        Admin[Management System (Private)]
-    end
-
-    LP -->|View Services| Router
-    LP -->|Book Online| Router
-    Admin -->|Login| Auth
-    Admin -->|Manage Schedule| Dashboard
-
-    Router --> Components
-    Dashboard --> Stores
-```
-
-## UX/UI Design Guidelines
-
-### Visual Identity "Studio Elegance"
-
-- **Mood**: Exclusive, Professional, Artistic, Serene.
-- **Colors**:
-  - `Primary`: #D4AF37 (Champagne Gold) - Accents, CTAs.
-  - `Background`: #0F0F0F (Rich Black) or #FFFFFF (Crisp White) - _Dependant on Dark/Light mode preference, suggesting Dark default for "Premium" feel._
-  - `Surface`: #1A1A1A (Soft Charcoal) - Cards, panels.
-  - `Text`: #F5F5F5 (Off-white) and #A3A3A3 (Muted silver).
-- **Typography**:
-  - _Headings_: **Playfair Display** or **Cinzel** (Serif, refined).
-  - _Body_: **Inter** or **Lato** (Clean, readable sans-serif).
-
-### Core Components
-
-| Component | Style Notes                                                                                 |
-| --------- | ------------------------------------------------------------------------------------------- |
-| Actions   | Buttons with thin borders, slight letter-spacing, uppercase text. Gold hover glow (subtle). |
-| Cards     | Glassmorphism with very low opacity tint, thin borders, ample padding.                      |
-| Images    | High contrast B&W with color on hover, or full saturation with slight vignette.             |
-
-## Proposed Changes (Phase Breakdown)
-
-### 1. Foundation
-
-#### [NEW] `vite.config.ts`, `tailwind.config.e`
-
-- Setup project root with alias imports.
-- Define the "Premium" theme in Tailwind config.
-
-### 2. Landing Page Modules
-
-#### [NEW] `src/pages/Landing/Hero.tsx`
-
-- Full-screen impactful visual.
-- "Agendar Agora" CTA.
-
-#### [NEW] `src/pages/Landing/Services.tsx`
-
-- Grid of services with price ranges and time estimates.
-
-#### [NEW] `src/pages/Landing/Portfolio.tsx`
-
-- Masonry grid of haircut transformations.
-
-### 3. Management System Modules
-
-#### [MODIFY] `src/pages/Admin/Dashboard.tsx`
-
-- Fetch data from `/dashboard/stats`.
-- Display Cards:
-  - **Faturamento Total** (Sum of `appointments.totalPrice`).
-  - **Total de Atendimentos** (Count of `appointments`).
-  - **Clientes** (Count of `clients`).
-- Show "Upcoming Appointments" list (Next 5).
-
-### 4. Backend Implementation (Dashboard)
-
-#### [NEW] `src/controllers/DashboardController.ts`
-
-- Method `getStats`:
-  - `totalRevenue`: Aggregate `totalPrice`.
-  - `totalAppointments`: Count.
-  - `activeClients`: Count users.
-  - `todayAppointments`: Count where date = Today.
-
-#### [NEW] `src/routes/dashboard.routes.ts`
-
-- GET `/stats` -> `DashboardController.getStats`
-
-#### [NEW] `src/pages/Admin/Agenda.tsx`
-
-- Calendar view.
-- Slot management.
-
-### 5. Client Management
-
-#### [NEW] `src/pages/Admin/Clients/index.tsx`
-
-- List all clients (GET `/clients`).
-- Search bar (client-side filtering).
-- "Novo Cliente" button -> Opens Modal.
-
-#### [NEW] `src/pages/Admin/Clients/ClientForm.tsx`
-
-- Form fields: Name (Required), Phone (Required), Email, Notes.
-- Uses `react-hook-form` (optional) or simple state.
-- ON SAVE: POST `/clients` or PUT `/clients/:id`.
-
-#### [NEW] `src/components/ui/Table.tsx`
-
-- Reusable styled table component for premium look.
+- **`frontend/src/services/api.ts`** (Verify)
+  - Ensure `apiFetch` handles headers correctly (Authorization).
+- **`frontend/src/pages/Admin/Profile/index.tsx`** (New Page)
+  - Display user info.
+  - Form to change password.
+- **`frontend/src/pages/Admin/Users/index.tsx`** (New Page)
+  - List users with status (Active/Inactive).
+  - "Add User" Modal.
+  - Actions: Toggle active status.
+- **`frontend/src/layouts/AdminLayout.tsx`**
+  - Add "Profile" and "Logout" in a user dropdown (Avatar).
+  - Add "Usuários" to the sidebar logic (maybe restricted to specific roles later, but strictly accessible for this phase).
 
 ## Verification Plan
 
-### Manual Verification
-
-- **Visual Check**: Verify the "Premium" feel matches expectations (smooth fonts, correct gold tones).
-- **Responsiveness**: Test Landing Page on Mobile (iPhone SE/14 dimensions) and Desktop (1920x1080).
-- **Flow**: User clicks "Agendar" -> redirected to booking flow (or WhatsApp link if simple).
+1.  **Database:** Run migration `npx prisma migrate dev --name add_user_active`.
+2.  **Backend:** Test endpoints via Insomnia/Curl (Login -> Get Token -> Call /users).
+3.  **Frontend:**
+    - Login.
+    - Go to Profile -> Change Password -> Re-login.
+    - Go to Users -> Create new User -> Login with new User.
+    - Disable User -> Try to Login with disabled user (should fail).

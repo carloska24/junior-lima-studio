@@ -2,6 +2,7 @@ import 'dotenv/config'; // Load env vars before anything else
 import express from 'express';
 import cors from 'cors';
 import { authRoutes } from './routes/auth.routes';
+import { userRoutes } from './routes/user.routes';
 import { clientRoutes } from './routes/client.routes';
 import { serviceRoutes } from './routes/service.routes';
 import { appointmentRoutes } from './routes/appointment.routes';
@@ -15,6 +16,7 @@ app.use(cors());
 
 // Routes
 app.use('/auth', authRoutes);
+app.use('/users', userRoutes);
 app.use('/clients', clientRoutes);
 app.use('/services', serviceRoutes);
 app.use('/appointments', appointmentRoutes);

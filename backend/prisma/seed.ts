@@ -1,6 +1,8 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 
+console.log('SEEDING WITH DB URL:', process.env.DATABASE_URL ? 'DEFINED' : 'UNDEFINED');
+
 const prisma = new PrismaClient();
 
 async function main() {

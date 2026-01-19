@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { apiFetch } from '@/services/api';
 import { Plus, Search, Pencil, Trash2, Loader2 } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
 import {
@@ -32,10 +33,7 @@ export function Services() {
 
   const fetchServices = async () => {
     try {
-      const token = localStorage.getItem('@JuniorLima:token');
-      const response = await fetch('http://localhost:3333/services', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await apiFetch('/services');
       const data = await response.json();
       setServices(data);
     } catch (error) {
@@ -59,19 +57,12 @@ export function Services() {
         durationMin: Number(data.durationMin),
       };
 
-      const token = localStorage.getItem('@JuniorLima:token');
-      const url = editingService
-        ? `http://localhost:3333/services/${editingService.id}`
-        : 'http://localhost:3333/services';
+      const url = editingService ? `/services/${editingService.id}` : '/services';
 
       const method = editingService ? 'PUT' : 'POST';
 
-      const response = await fetch(url, {
+      const response = await apiFetch(url, {
         method,
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
         body: JSON.stringify(payload),
       });
 
@@ -92,10 +83,8 @@ export function Services() {
     if (!confirm('Deseja realmente remover este serviço? Ele será apenas desativado.')) return;
 
     try {
-      const token = localStorage.getItem('@JuniorLima:token');
-      await fetch(`http://localhost:3333/services/${id}`, {
+      await apiFetch(`/services/${id}`, {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` },
       });
       await fetchServices();
     } catch (error) {
@@ -211,7 +200,16 @@ export function Services() {
         title={editingService ? 'Editar Serviço' : 'Novo Serviço'}
       >
         <ServiceForm
-          initialData={editingService}
+          initialData={
+            editingService
+              ? {
+                  ...editingService,
+                  description: editingService.description || '',
+                  price: Number(editingService.price),
+                  durationMin: Number(editingService.durationMin),
+                }
+              : undefined
+          }
           onSubmit={handleSave}
           onCancel={() => setIsModalOpen(false)}
           isLoading={isSaving}

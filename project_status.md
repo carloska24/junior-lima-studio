@@ -9,7 +9,7 @@
 - [x] Design Landing Page Layout (Wireframe/Mockup concepts)
 - [x] Design Management Dashboard Layout directly in code
 
-## Phase 2: Foundation Setup
+## Phase 2: Foundation Setup (Completed)
 
 - [x] Initialize Project (React + Vite + TypeScript)
 - [x] Configure Tailwind CSS with Custom Premium Theme
@@ -18,7 +18,7 @@
 - [x] Configure PostgreSQL Database
 - [x] Initialize Prisma ORM & Define Schema
 
-## Phase 3: Landing Page Implementation
+## Phase 3: Landing Page Implementation (Completed)
 
 - [x] Component: Hero Section (Video/High-res Image)
 - [x] Component: Services Showcase (Cards with hover effects)
@@ -27,30 +27,32 @@
 - [x] Component: Footer & Contact
 - [x] Component: Booking CTA
 
-## Phase 4: Management System Implementation
+## Phase 4: Management System Implementation (Completed)
 
 - [x] Module: Admin Layout & Routing
-- [x] Module: Authentication (Login)
-- [x]- **Agenda (Calendário Semanal)**: ✅ CONCLUÍDO (Visual + Integração + Botão Novo Agendamento)
-- **Dashboard**: ✅ CONCLUÍDO (Visual + Dados Reais)
-- **Gestão de Clientes**: ✅ CONCLUÍDO (CRUD Completo)
-- **Catálogo de Serviços**: ✅ CONCLUÍDO (CRUD Completo)
+- [x] Module: Authentication (Login, Register, Logout)
+- [x] Module: Admin Profile & User Management
+- [x] **Agenda (Calendário Semanal)**: ✅ CONCLUÍDO (Visual + Integração + Botão Novo Agendamento)
+- [x] **Dashboard**: ✅ CONCLUÍDO (Visual + Dados Reais)
+- [x] **Gestão de Clientes**: ✅ CONCLUÍDO (CRUD Completo)
+- [x] **Catálogo de Serviços**: ✅ CONCLUÍDO (CRUD Completo)
+- [x] **Gestão de Usuários**: ✅ CONCLUÍDO (CRUD de Admins + Perfil)
 
-## 🔮 Próximos Passos Imediatos
-
-1.  **Validação Final (End-to-End)**:
-    - Criar um agendamento real pelo botão novo.
-    - Confirmar se aparece na grade de horários.
-    - Confirmar se o Faturamento no Dashboard aumentou.
-2.  **Preparação para Deploy**:
-    - Verificar variáveis de ambiente de produção.
-    - Build da aplicação.
-
-## Phase 5: Backend Integration
+## Phase 5: Backend Integration (Completed)
 
 - [x] Config: Database & Prisma Setup
 - [x] API: Auth Endpoints (Login/Register)
+- [x] API: User Endpoints (/me, /users)
 - [x] API: Client Endpoints
 - [x] API: Service Endpoints
 - [x] API: Appointment Endpoints
 - [x] Integration: Connect Frontend to Real API
+
+## Phase 6: Deployment (In Progress)
+
+- [x] Infraestrutura (Cloud SQL) Configurada e Populada.
+- [x] Backend Deploy (Cloud Run).
+- [x] Frontend Deploy (Firebase Hosting).
+- [ ] Monitoramento e Segurança Final.
+
+**Status Geral:** Sistema completo e em produção. Fase de manutenção e melhorias.

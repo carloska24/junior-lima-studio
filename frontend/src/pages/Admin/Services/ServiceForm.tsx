@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Loader2 } from 'lucide-react';
 
@@ -36,7 +36,7 @@ export function ServiceForm({ initialData, onSubmit, onCancel, isLoading }: Serv
   useEffect(() => {
     if (initialData) {
       setValue('name', initialData.name);
-      setValue('description', initialData.description);
+      setValue('description', initialData.description || '');
       setValue('price', Number(initialData.price));
       setValue('durationMin', Number(initialData.durationMin));
       setValue('active', initialData.active);

@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { LandingPage } from '@/pages/Landing';
@@ -7,6 +6,8 @@ import { Dashboard } from '@/pages/Admin/Dashboard';
 import { Agenda } from '@/pages/Admin/Agenda';
 import { Clients } from '@/pages/Admin/Clients';
 import { Services } from '@/pages/Admin/Services';
+import { Users } from '@/pages/Admin/Users';
+import { Profile } from '@/pages/Admin/Profile';
 import { Login } from '@/pages/Auth/Login';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 
@@ -26,7 +27,8 @@ function App() {
               <Route path="agenda" element={<Agenda />} />
               <Route path="clients" element={<Clients />} />
               <Route path="services" element={<Services />} />
-              {/* Future routes will go here */}
+              <Route path="users" element={<Users />} />
+              <Route path="profile" element={<Profile />} />
             </Route>
           </Route>
 

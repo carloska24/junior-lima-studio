@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
+import { apiFetch } from '@/services/api';
 
 interface DashboardStats {
   totalAppointments: number;
@@ -16,10 +17,7 @@ export function Dashboard() {
   useEffect(() => {
     async function fetchStats() {
       try {
-        const token = localStorage.getItem('@JuniorLima:token');
-        const response = await fetch('http://localhost:3333/dashboard/stats', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await apiFetch('/dashboard/stats');
         const data = await response.json();
         setStats(data);
       } catch (error) {

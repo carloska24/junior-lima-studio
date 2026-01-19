@@ -6,12 +6,13 @@ import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { Modal } from '@/components/ui/Modal';
 import { AppointmentForm } from './AppointmentForm';
+import { apiFetch } from '@/services/api';
 
 export interface WeeklyCalendarRef {
   handleNewAppointment: () => void;
 }
 
-export const WeeklyCalendar = forwardRef<WeeklyCalendarRef>((props, ref) => {
+export const WeeklyCalendar = forwardRef<WeeklyCalendarRef>((_props, ref) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedSlot, setSelectedSlot] = useState<Date | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -19,7 +20,7 @@ export const WeeklyCalendar = forwardRef<WeeklyCalendarRef>((props, ref) => {
   // Configuration
   const startHour = 9;
   const endHour = 20;
-  const timeSlots = [];
+  const timeSlots: number[] = [];
 
   const handleNewAppointment = () => {
     // Default to today at current hour (or startHour if earlier)
@@ -74,10 +75,7 @@ export const WeeklyCalendar = forwardRef<WeeklyCalendarRef>((props, ref) => {
 
   const fetchAppointments = async () => {
     try {
-      const token = localStorage.getItem('@JuniorLima:token');
-      const response = await fetch('http://localhost:3333/appointments', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await apiFetch('/appointments');
       const data = await response.json();
       setAppointments(data);
     } catch (error) {

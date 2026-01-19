@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { WeeklyCalendar, type WeeklyCalendarRef } from './WeeklyCalendar';
 import { Button } from '@/components/ui/Button';
 import { Plus } from 'lucide-react';

@@ -3,6 +3,7 @@ import { format, addMinutes } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Clock, User, Scissors, Calendar as CalendarIcon, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { apiFetch } from '@/services/api';
 
 interface Client {
   id: string;
@@ -34,12 +35,9 @@ export function AppointmentForm({ initialDate, onCancel, onSuccess }: Appointmen
   useEffect(() => {
     async function fetchData() {
       try {
-        const token = localStorage.getItem('@JuniorLima:token');
-        const headers = { Authorization: `Bearer ${token}` };
-
         const [clientsRes, servicesRes] = await Promise.all([
-          fetch('http://localhost:3333/clients', { headers }),
-          fetch('http://localhost:3333/services', { headers }),
+          apiFetch('/clients'),
+          apiFetch('/services'),
         ]);
 
         const clientsData = await clientsRes.json();
@@ -85,13 +83,8 @@ export function AppointmentForm({ initialDate, onCancel, onSuccess }: Appointmen
     setSubmitting(true);
 
     try {
-      const token = localStorage.getItem('@JuniorLima:token');
-      const response = await fetch('http://localhost:3333/appointments', {
+      const response = await apiFetch('/appointments', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
         body: JSON.stringify({
           date: initialDate.toISOString(),
           clientId: selectedClientId,

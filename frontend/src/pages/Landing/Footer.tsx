@@ -1,4 +1,3 @@
-import React from 'react';
 import { Instagram, MapPin, Phone, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 

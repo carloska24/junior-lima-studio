@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { apiFetch } from '@/services/api';
 import { Plus, Search, Pencil, Trash2, Loader2 } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
 import {
@@ -31,10 +32,7 @@ export function Clients() {
 
   const fetchClients = async () => {
     try {
-      const token = localStorage.getItem('@JuniorLima:token');
-      const response = await fetch('http://localhost:3333/clients', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await apiFetch('/clients');
       const data = await response.json();
       setClients(data);
     } catch (error) {
@@ -51,19 +49,12 @@ export function Clients() {
   const handleSave = async (data: any) => {
     setIsSaving(true);
     try {
-      const token = localStorage.getItem('@JuniorLima:token');
-      const url = editingClient
-        ? `http://localhost:3333/clients/${editingClient.id}`
-        : 'http://localhost:3333/clients';
+      const url = editingClient ? `/clients/${editingClient.id}` : '/clients';
 
       const method = editingClient ? 'PUT' : 'POST';
 
-      const response = await fetch(url, {
+      const response = await apiFetch(url, {
         method,
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
         body: JSON.stringify(data),
       });
 
@@ -84,10 +75,8 @@ export function Clients() {
     if (!confirm('Tem certeza que deseja excluir este cliente?')) return;
 
     try {
-      const token = localStorage.getItem('@JuniorLima:token');
-      await fetch(`http://localhost:3333/clients/${id}`, {
+      await apiFetch(`/clients/${id}`, {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` },
       });
       await fetchClients();
     } catch (error) {
@@ -197,7 +186,15 @@ export function Clients() {
         title={editingClient ? 'Editar Cliente' : 'Novo Cliente'}
       >
         <ClientForm
-          initialData={editingClient}
+          initialData={
+            editingClient
+              ? {
+                  ...editingClient,
+                  email: editingClient.email || '',
+                  notes: editingClient.notes || '',
+                }
+              : undefined
+          }
           onSubmit={handleSave}
           onCancel={() => setIsModalOpen(false)}
           isLoading={isSaving}
