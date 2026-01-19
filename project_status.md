@@ -53,6 +53,7 @@
 - [x] Infraestrutura (Cloud SQL) Configurada e Populada.
 - [x] Backend Deploy (Cloud Run).
 - [x] Frontend Deploy (Firebase Hosting).
+- [x] Configuração de CI/CD (GitHub Actions).
 - [ ] Monitoramento e Segurança Final.
 
-**Status Geral:** Sistema completo e em produção. Fase de manutenção e melhorias.
+**Status Geral:** Sistema completo, em produção e com deploy automático configurado.
