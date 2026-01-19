@@ -7,6 +7,7 @@ on:
       - 'frontend/**'
       - '.github/workflows/deploy-frontend.yml'
       - 'firebase.json'
+  workflow_dispatch:
 
 jobs:
   build_and_deploy:
