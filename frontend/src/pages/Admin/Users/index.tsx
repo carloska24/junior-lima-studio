@@ -15,7 +15,7 @@ export function Users() {
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const { register, handleSubmit, reset, reset } = useForm();
+  const { register, handleSubmit, reset } = useForm();
   const [error, setError] = useState('');
 
   useEffect(() => {
