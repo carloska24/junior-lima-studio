@@ -58,3 +58,4 @@ jobs:
           cd backend
           echo "DATABASE_URL=${{ secrets.DATABASE_URL_PRODUCTION }}" > .env
           npx prisma migrate deploy
+# Retry backend deploy
