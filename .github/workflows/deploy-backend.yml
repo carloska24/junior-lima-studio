@@ -61,3 +61,4 @@ jobs:
 # Retry backend deploy
 # Retry after IAM roles assignment
 # Retry with Artifact Registry Admin role
+# Retry after CLI role assignment
