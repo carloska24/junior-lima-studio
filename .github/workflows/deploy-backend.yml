@@ -34,20 +34,20 @@ jobs:
         uses: google-github-actions/setup-gcloud@v2
 
       - name: Configure Docker
-        run: gcloud auth configure-docker --quiet
+        run: gcloud auth configure-docker southamerica-east1-docker.pkg.dev --quiet
 
       - name: Build and Push Container
         run: |
           cd backend
-          docker build -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }} .
-          docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+          docker build -t southamerica-east1-docker.pkg.dev/${{ env.PROJECT_ID }}/junior-lima-api/${{ env.SERVICE_NAME }}:${{ github.sha }} .
+          docker push southamerica-east1-docker.pkg.dev/${{ env.PROJECT_ID }}/junior-lima-api/${{ env.SERVICE_NAME }}:${{ github.sha }}
 
       - name: Deploy to Cloud Run
         uses: google-github-actions/deploy-cloudrun@v2
         with:
           service: ${{ env.SERVICE_NAME }}
           region: ${{ env.REGION }}
-          image: gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+          image: southamerica-east1-docker.pkg.dev/${{ env.PROJECT_ID }}/junior-lima-api/${{ env.SERVICE_NAME }}:${{ github.sha }}
           flags: '--allow-unauthenticated'
           env_vars: |
             DATABASE_URL=${{ secrets.DATABASE_URL_PRODUCTION }}
@@ -58,6 +58,7 @@ jobs:
           cd backend
           echo "DATABASE_URL=${{ secrets.DATABASE_URL_PRODUCTION }}" > .env
           npx prisma migrate deploy
+
 # Retry backend deploy
 # Retry after IAM roles assignment
 # Retry with Artifact Registry Admin role
