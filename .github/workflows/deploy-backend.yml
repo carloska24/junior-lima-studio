@@ -64,3 +64,4 @@ jobs:
 # Retry with Artifact Registry Admin role
 # Retry after CLI role assignment
 # Retry after repository creation
+# Retry after Cloud Run API enable
