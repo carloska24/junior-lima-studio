@@ -13,6 +13,7 @@ export class StudioController {
 
       return res.json(settings);
     } catch (error) {
+      console.error('Error fetching settings:', error);
       return res.status(500).json({ error: 'Internal server error' });
     }
   }

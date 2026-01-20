@@ -38,7 +38,7 @@ export function Hero({ settings }: HeroProps) {
           </h1>
 
           <p className="font-sans text-gray-400 tracking-[0.2em] text-sm md:text-base uppercase">
-            Hair Artist • {settings?.city.split('–')[0].trim() || 'Campinas'}
+            Hair Artist • {settings?.city?.split('–')[0].trim() || 'Campinas'}
           </p>
         </motion.div>
 
