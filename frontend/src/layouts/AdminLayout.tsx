@@ -8,6 +8,7 @@ import {
   Shield,
   User,
   ChevronDown,
+  Settings,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
@@ -20,6 +21,7 @@ export function AdminLayout() {
     { icon: Users, label: 'Clientes', path: '/admin/clients' },
     { icon: Scissors, label: 'Serviços', path: '/admin/services' },
     { icon: Shield, label: 'Usuários', path: '/admin/users' },
+    { icon: Settings, label: 'Configurações', path: '/admin/settings' },
   ];
 
   const { signOut, user } = useAuth();

@@ -48,12 +48,23 @@
 - [x] API: Appointment Endpoints
 - [x] Integration: Connect Frontend to Real API
 
-## Phase 6: Deployment (In Progress)
+### Phase 4: DevOps & Deployment (Completed)
 
-- [x] Infraestrutura (Cloud SQL) Configurada e Populada.
-- [x] Backend Deploy (Cloud Run).
-- [x] Frontend Deploy (Firebase Hosting).
-- [/] Configuração de CI/CD (GitHub Actions) - _Pendente: Correção de Build Backend_
-- [ ] Monitoramento e Segurança Final.
+- [x] Configure Google Cloud Project (junior-lima-studio-app-1da7b)
+- [x] Setup Firebase Hosting (Frontend)
+- [x] Configure Docker & Artifact Registry (Backend)
+- [x] Deploy Backend to Cloud Run
+- [x] Setup CI/CD Pipelines (GitHub Actions)
 
-**Status Geral:** Sistema completo, em produção e com deploy automático configurado.
+### Phase 7: Studio Settings (Completed)
+
+- [x] Backend: StudioSettings Entity & Endpoints
+- [x] Frontend: Admin Settings Page
+- [x] Integrate: Dynamic Landing Page Content
+
+### Phase 8: Visual Evolution (Planned)
+
+- [ ] UI: Luxury Editorial Aesthetic
+- [ ] UI: Portfolio-Driven Layout
+
+**Status Geral:** Sistema em produção com CI/CD e gestão de configurações ativa. Próximo passo: Polimento visual.

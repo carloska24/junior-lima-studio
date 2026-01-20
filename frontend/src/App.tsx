@@ -8,6 +8,7 @@ import { Clients } from '@/pages/Admin/Clients';
 import { Services } from '@/pages/Admin/Services';
 import { Users } from '@/pages/Admin/Users';
 import { Profile } from '@/pages/Admin/Profile';
+import { SettingsPage } from '@/pages/Admin/Settings';
 import { Login } from '@/pages/Auth/Login';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 
@@ -29,6 +30,7 @@ function App() {
               <Route path="services" element={<Services />} />
               <Route path="users" element={<Users />} />
               <Route path="profile" element={<Profile />} />
+              <Route path="settings" element={<SettingsPage />} />
             </Route>
           </Route>
 

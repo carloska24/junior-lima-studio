@@ -1,15 +1,19 @@
 import { useNavigate } from 'react-router-dom';
-
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
+import type { StudioSettings } from '@/types/studio';
 
-export function Hero() {
+interface HeroProps {
+  settings?: StudioSettings | null;
+}
+
+export function Hero({ settings }: HeroProps) {
   const navigate = useNavigate();
 
   return (
     <section className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-midnight-900">
       {/* Background Ambience (Subtle Gradient/Overlay) */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-midnight-800 via-midnight-900 to-black opacity-80" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--tw-gradient-stops))] from-midnight-800 via-midnight-900 to-black opacity-80" />
 
       {/* Content Container */}
       <div className="relative z-10 text-center px-6 max-w-4xl mx-auto space-y-8">
@@ -30,11 +34,11 @@ export function Hero() {
           </motion.p>
 
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif text-gray-100 font-medium">
-            Júnior Lima
+            {settings?.name || 'Júnior Lima'}
           </h1>
 
           <p className="font-sans text-gray-400 tracking-[0.2em] text-sm md:text-base uppercase">
-            Hair Artist • Campinas
+            Hair Artist • {settings?.city.split('–')[0].trim() || 'Campinas'}
           </p>
         </motion.div>
 
@@ -43,7 +47,7 @@ export function Hero() {
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
           transition={{ delay: 1, duration: 1.5, ease: 'easeInOut' }}
-          className="h-[1px] w-24 bg-gold-500/50 mx-auto"
+          className="h-px w-24 bg-gold-500/50 mx-auto"
         />
 
         {/* CTA Button */}
@@ -63,7 +67,7 @@ export function Hero() {
       </div>
 
       {/* Background Decorative Elements (Optional - can be replaced by real image later) */}
-      <div className="absolute bottom-0 w-full h-32 bg-gradient-to-t from-midnight-900 to-transparent pointer-events-none" />
+      <div className="absolute bottom-0 w-full h-32 bg-linear-to-t from-midnight-900 to-transparent pointer-events-none" />
     </section>
   );
 }

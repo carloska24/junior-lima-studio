@@ -1,14 +1,33 @@
 import { Instagram, MapPin, Phone, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import type { StudioSettings } from '@/types/studio';
 
-export function Footer() {
+interface FooterProps {
+  settings?: StudioSettings | null;
+}
+
+export function Footer({ settings }: FooterProps) {
+  // Format opening hours from text to list items if needed or just display as pre
+  // The seed has newlines. Let's split by newline.
+  const hours = settings?.openingHours
+    ? settings.openingHours.split('\n')
+    : [
+        'Segunda-feira: Fechado',
+        'Terça-feira: 12:00–18:00',
+        'Quarta-feira: 12:00–18:00',
+        'Quinta-feira: 10:00–18:00',
+        'Sexta-feira: 10:00–18:00',
+        'Sábado: 10:00–18:00',
+        'Domingo: Fechado',
+      ];
+
   return (
     <footer className="bg-midnight-950 border-t border-midnight-800 pt-20 pb-10 px-6">
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
         {/* Brand */}
         <div className="space-y-6 md:col-span-2">
           <div>
-            <h2 className="text-3xl font-serif text-gold-500">Júnior Lima</h2>
+            <h2 className="text-3xl font-serif text-gold-500">{settings?.name || 'Júnior Lima'}</h2>
             <p className="text-gray-500 text-sm tracking-widest uppercase mt-1">Hair Artist</p>
           </div>
           <p className="text-gray-400 max-w-sm leading-relaxed">
@@ -16,13 +35,17 @@ export function Footer() {
             técnica precisa e ambiente exclusivo.
           </p>
           <div className="flex gap-4">
-            <a
-              href="#"
-              className="p-2 bg-midnight-800 text-gold-500 rounded-sm hover:bg-gold-500 hover:text-midnight-900 transition-colors"
-              aria-label="Visite nosso Instagram"
-            >
-              <Instagram size={20} aria-hidden="true" />
-            </a>
+            {settings?.instagramUrl && (
+              <a
+                href={settings.instagramUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="p-2 bg-midnight-800 text-gold-500 rounded-sm hover:bg-gold-500 hover:text-midnight-900 transition-colors"
+                aria-label="Visite nosso Instagram"
+              >
+                <Instagram size={20} aria-hidden="true" />
+              </a>
+            )}
           </div>
         </div>
 
@@ -33,14 +56,14 @@ export function Footer() {
             <li className="flex gap-3 items-start">
               <MapPin className="text-gold-500 shrink-0 mt-1" size={18} />
               <span>
-                Rua Coronel Quirino, 123
+                {settings?.address || 'Rua Lotário Novaes, 273'}
                 <br />
-                Cambuí, Campinas - SP
+                {settings?.city || 'Campinas – SP'}
               </span>
             </li>
             <li className="flex gap-3 items-center">
               <Phone className="text-gold-500 shrink-0" size={18} />
-              <span>(19) 99999-9999</span>
+              <span>{settings?.phone || '(19) 99268-7759'}</span>
             </li>
           </ul>
         </div>
@@ -49,11 +72,12 @@ export function Footer() {
         <div className="space-y-6">
           <h3 className="text-lg font-medium text-white">Horários</h3>
           <ul className="space-y-4 text-gray-400 text-sm">
-            <li className="flex gap-3 items-center">
-              <Clock className="text-gold-500 shrink-0" size={18} />
-              <div>
-                <p>Terça a Sexta: 09h - 20h</p>
-                <p>Sábado: 09h - 18h</p>
+            <li className="flex gap-3 items-start">
+              <Clock className="text-gold-500 shrink-0 mt-1" size={18} />
+              <div className="space-y-1">
+                {hours.map((line, i) => (
+                  <p key={i}>{line}</p>
+                ))}
               </div>
             </li>
           </ul>

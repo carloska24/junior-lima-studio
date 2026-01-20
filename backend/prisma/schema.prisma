@@ -76,3 +76,19 @@ enum AppointmentStatus {
   CANCELED
   NO_SHOW
 }
+
+model StudioSettings {
+  id           String   @id @default(uuid())
+  name         String
+  email        String
+  phone        String
+  whatsapp     String
+  address      String
+  city         String
+  openingHours String
+  instagramUrl String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("studio_settings")
+}
