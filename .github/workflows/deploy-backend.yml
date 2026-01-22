@@ -59,6 +59,7 @@ jobs:
           npm install
           echo "DATABASE_URL=${{ secrets.DATABASE_URL_PRODUCTION }}" > .env
           npx prisma migrate deploy
+          npx prisma db seed
 
 # Retry backend deploy
 # Retry after IAM roles assignment
