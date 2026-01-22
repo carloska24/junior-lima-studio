@@ -9,6 +9,7 @@ import {
   User,
   ChevronDown,
   Settings,
+  Image,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
@@ -20,6 +21,7 @@ export function AdminLayout() {
     { icon: Calendar, label: 'Agenda', path: '/admin/agenda' },
     { icon: Users, label: 'Clientes', path: '/admin/clients' },
     { icon: Scissors, label: 'Serviços', path: '/admin/services' },
+    { icon: Image, label: 'Portfólio', path: '/admin/portfolio' },
     { icon: Shield, label: 'Usuários', path: '/admin/users' },
     { icon: Settings, label: 'Configurações', path: '/admin/settings' },
   ];

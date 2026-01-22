@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Bloquear áreas administrativas
+Disallow: /admin
+Disallow: /login
+
+# Sitemap
+Sitemap: https://junior-lima-studio-app-1da7b.web.app/sitemap.xml

@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import 'dotenv/config';
 import bcrypt from 'bcryptjs';
 
 console.log('SEEDING WITH DB URL:', process.env.DATABASE_URL ? 'DEFINED' : 'UNDEFINED');

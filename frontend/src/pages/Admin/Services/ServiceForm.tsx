@@ -1,12 +1,13 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Image as ImageIcon } from 'lucide-react';
 
 interface ServiceFormData {
   name: string;
   description: string;
   price: number;
   durationMin: number;
+  imageUrl?: string;
   active?: boolean;
 }
 
@@ -18,20 +19,26 @@ interface ServiceFormProps {
 }
 
 export function ServiceForm({ initialData, onSubmit, onCancel, isLoading }: ServiceFormProps) {
+  const [imagePreview, setImagePreview] = useState<string>('');
+
   const {
     register,
     handleSubmit,
     formState: { errors },
     setValue,
+    watch,
   } = useForm<ServiceFormData>({
     defaultValues: {
       name: '',
       description: '',
       price: 0,
       durationMin: 30,
+      imageUrl: '',
       active: true,
     },
   });
+
+  const watchImageUrl = watch('imageUrl');
 
   useEffect(() => {
     if (initialData) {
@@ -39,9 +46,17 @@ export function ServiceForm({ initialData, onSubmit, onCancel, isLoading }: Serv
       setValue('description', initialData.description || '');
       setValue('price', Number(initialData.price));
       setValue('durationMin', Number(initialData.durationMin));
+      setValue('imageUrl', initialData.imageUrl || '');
       setValue('active', initialData.active);
+      setImagePreview(initialData.imageUrl || '');
     }
   }, [initialData, setValue]);
+
+  useEffect(() => {
+    if (watchImageUrl) {
+      setImagePreview(watchImageUrl);
+    }
+  }, [watchImageUrl]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -50,7 +65,7 @@ export function ServiceForm({ initialData, onSubmit, onCancel, isLoading }: Serv
         <input
           {...register('name', { required: 'Nome é obrigatório' })}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-gold-500 focus:ring-gold-500 sm:text-sm p-2 border text-midnight-900"
-          placeholder="Ex: Corte Degrade"
+          placeholder="Ex: Corte Signature"
         />
         {errors.name && <span className="text-xs text-red-500">{errors.name.message}</span>}
       </div>
@@ -87,7 +102,38 @@ export function ServiceForm({ initialData, onSubmit, onCancel, isLoading }: Serv
         />
       </div>
 
-      {/* Hidden active field handling if needed, usually just 'Delete' sets to inactive */}
+      {/* Campo de URL da Imagem */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          <span className="flex items-center gap-2">
+            <ImageIcon size={16} />
+            URL da Imagem (opcional)
+          </span>
+        </label>
+        <input
+          {...register('imageUrl')}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-gold-500 focus:ring-gold-500 sm:text-sm p-2 border text-midnight-900"
+          placeholder="https://exemplo.com/imagem.jpg"
+        />
+        <p className="mt-1 text-xs text-gray-500">
+          Cole a URL de uma imagem para exibir na landing page (Unsplash, Google Drive, etc.)
+        </p>
+
+        {/* Preview da Imagem */}
+        {imagePreview && (
+          <div className="mt-3 relative">
+            <p className="text-xs text-gray-500 mb-2">Preview:</p>
+            <div className="w-full h-32 rounded-md overflow-hidden bg-gray-100 border">
+              <img
+                src={imagePreview}
+                alt="Preview"
+                className="w-full h-full object-cover"
+                onError={() => setImagePreview('')}
+              />
+            </div>
+          </div>
+        )}
+      </div>
 
       <div className="flex justify-end gap-2 pt-4">
         <button

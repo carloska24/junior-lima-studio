@@ -8,12 +8,33 @@ import { serviceRoutes } from './routes/service.routes';
 import { appointmentRoutes } from './routes/appointment.routes';
 import { dashboardRoutes } from './routes/dashboard.routes';
 import { studioRoutes } from './routes/studio.routes';
+import { portfolioRoutes } from './routes/portfolio.routes';
 
 const app = express();
-const PORT = process.env.PORT || 3333; // Changed back to 3333 to match .env
+const PORT = process.env.PORT || 3333;
+
+// Configuração de CORS mais segura
+const allowedOrigins = [
+  'http://localhost:5173', // Dev frontend
+  'http://localhost:3000',
+  'https://junior-lima-studio-app-1da7b.web.app', // Produção
+  'https://junior-lima-studio-app-1da7b.firebaseapp.com',
+];
 
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Permite requests sem origin (mobile apps, Postman, etc)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error('Not allowed by CORS'));
+    },
+    credentials: true,
+  })
+);
 
 // Routes
 app.use('/auth', authRoutes);
@@ -23,6 +44,7 @@ app.use('/services', serviceRoutes);
 app.use('/appointments', appointmentRoutes);
 app.use('/dashboard', dashboardRoutes);
 app.use('/studio', studioRoutes);
+app.use('/portfolio', portfolioRoutes);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date() });
@@ -30,5 +52,4 @@ app.get('/health', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
-  // Force restart trigger
 });

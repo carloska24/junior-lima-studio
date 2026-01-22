@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Hero } from './Hero';
+import { Visagismo } from './Visagismo';
 import { Services } from './Services';
 import { Portfolio } from './Portfolio';
 import { Testimonials } from './Testimonials';
@@ -18,10 +19,11 @@ export function LandingPage() {
   }, []);
 
   return (
-    <main className="bg-midnight-900 min-h-screen text-gray-100 selection:bg-gold-500 selection:text-midnight-900">
+    <main className="bg-midnight-950 min-h-screen text-offwhite-200">
       <Hero settings={settings} />
+      <Visagismo />
       <Services />
-      <Portfolio />
+      <Portfolio settings={settings} />
       <Testimonials />
       <Footer settings={settings} />
     </main>

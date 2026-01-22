@@ -39,6 +39,7 @@ model Service {
   description String?
   price       Decimal       @db.Decimal(10, 2)
   durationMin Int           // Duration in minutes
+  imageUrl    String?       // URL da imagem do serviço
   active      Boolean       @default(true)
   appointments Appointment[] // Implicit many-to-many
   createdAt   DateTime      @default(now())
@@ -46,6 +47,23 @@ model Service {
 
   @@map("services")
 }
+
+// Portfólio de trabalhos para exibição na landing page
+model PortfolioItem {
+  id          String   @id @default(uuid())
+  title       String
+  category    String   // Corte, Barba, Coloração, Tratamento, Visagismo
+  imageUrl    String
+  description String?
+  order       Int      @default(0) // Ordem de exibição
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("portfolio_items")
+}
+
+
 
 model Appointment {
   id        String   @id @default(uuid())

@@ -16,7 +16,7 @@ export class ServiceController {
   }
 
   async create(req: Request, res: Response) {
-    const { name, description, price, durationMin } = req.body;
+    const { name, description, price, durationMin, imageUrl } = req.body;
 
     try {
       const service = await prisma.service.create({
@@ -25,6 +25,7 @@ export class ServiceController {
           description,
           price,
           durationMin,
+          imageUrl,
         },
       });
 
@@ -37,7 +38,7 @@ export class ServiceController {
 
   async update(req: Request, res: Response) {
     const { id } = req.params;
-    const { name, description, price, durationMin, active } = req.body;
+    const { name, description, price, durationMin, active, imageUrl } = req.body;
 
     try {
       const service = await prisma.service.update({
@@ -48,6 +49,7 @@ export class ServiceController {
           price,
           durationMin,
           active,
+          imageUrl,
         },
       });
 

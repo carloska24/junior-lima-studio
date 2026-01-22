@@ -18,6 +18,7 @@ interface Service {
   description: string | null;
   price: number;
   durationMin: number;
+  imageUrl: string | null;
   active: boolean;
 }
 

@@ -6,6 +6,7 @@ import { Dashboard } from '@/pages/Admin/Dashboard';
 import { Agenda } from '@/pages/Admin/Agenda';
 import { Clients } from '@/pages/Admin/Clients';
 import { Services } from '@/pages/Admin/Services';
+import { Portfolio } from '@/pages/Admin/Portfolio';
 import { Users } from '@/pages/Admin/Users';
 import { Profile } from '@/pages/Admin/Profile';
 import { SettingsPage } from '@/pages/Admin/Settings';
@@ -28,6 +29,7 @@ function App() {
               <Route path="agenda" element={<Agenda />} />
               <Route path="clients" element={<Clients />} />
               <Route path="services" element={<Services />} />
+              <Route path="portfolio" element={<Portfolio />} />
               <Route path="users" element={<Users />} />
               <Route path="profile" element={<Profile />} />
               <Route path="settings" element={<SettingsPage />} />

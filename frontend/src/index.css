@@ -1,41 +1,82 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-gold-400: #ebcb63;
-  --color-gold-500: #d4af37;
-  --color-gold-600: #b08d26;
+  /* Luxury Palette */
+  --color-gold-300: #e5cd90;
+  --color-gold-400: #d4af37;
+  --color-gold-500: #c5a028;
+  --color-gold-600: #a08020;
 
-  --color-midnight-900: #0f0f0f;
-  --color-midnight-800: #1a1a1a;
-  --color-midnight-700: #2a2a2a;
+  --color-midnight-950: #050505;
+  --color-midnight-900: #0a0a0a;
+  --color-midnight-800: #121212;
+  --color-midnight-700: #1e1e1e;
 
+  --color-offwhite-100: #f9f9f7;
+  --color-offwhite-200: #f0f0e8;
+  --color-offwhite-300: #e2e2d5;
+
+  /* Typography */
   --font-serif: 'Playfair Display', serif;
+  --font-display: 'Cinzel', serif;
   --font-sans: 'Inter', sans-serif;
+
+  /* Spacing */
+  --spacing-18: 4.5rem;
+  --spacing-112: 28rem;
+  --spacing-128: 32rem;
 }
 
 @layer base {
   html,
   body {
-    @apply bg-midnight-900 text-gray-100 font-sans antialiased;
+    @apply bg-midnight-950 text-offwhite-200 font-sans antialiased selection:bg-gold-500/30 selection:text-gold-300;
   }
-}
 
-@layer utilities {
   h1,
   h2,
   h3,
   h4,
   h5,
   h6 {
-    @apply font-serif text-gold-500;
+    @apply font-serif text-white tracking-tight;
+  }
+}
+
+@layer utilities {
+  /* Editorial Utilities */
+  .text-editorial-gold {
+    @apply text-gold-400;
   }
 
-  input:-webkit-autofill,
-  input:-webkit-autofill:hover,
-  input:-webkit-autofill:focus,
-  input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 30px #0f0f0f inset !important;
-    -webkit-text-fill-color: white !important;
-    transition: background-color 5000s ease-in-out 0s;
+  .text-editorial-main {
+    @apply font-serif text-offwhite-100;
+  }
+
+  .tracking-widest-editorial {
+    letter-spacing: 0.15em;
+  }
+
+  /* Micro-interactions */
+  .hover-scale-gentle {
+    @apply transition-transform duration-700 ease-out hover:scale-[1.02];
+  }
+
+  .hover-reveal {
+    @apply opacity-0 transition-opacity duration-500 hover:opacity-100;
+  }
+
+  /* Custom Scrollbar for Luxury Feel */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-midnight-950;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-midnight-700 rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gold-600;
   }
 }

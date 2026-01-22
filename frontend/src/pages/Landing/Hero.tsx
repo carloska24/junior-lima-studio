@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
 import type { StudioSettings } from '@/types/studio';
@@ -8,66 +7,59 @@ interface HeroProps {
 }
 
 export function Hero({ settings }: HeroProps) {
-  const navigate = useNavigate();
+  // Formata o número de WhatsApp para link (remove caracteres especiais)
+  const formatWhatsAppLink = () => {
+    const whatsapp = settings?.whatsapp || settings?.phone || '5519990681759';
+    const cleanNumber = whatsapp.replace(/\D/g, '');
+    const message = encodeURIComponent(
+      `Olá! Gostaria de agendar um horário no ${settings?.name || 'Júnior Lima Studio'}. 🪒✨`
+    );
+    return `https://wa.me/${cleanNumber}?text=${message}`;
+  };
 
   return (
-    <section className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-midnight-900">
-      {/* Background Ambience (Subtle Gradient/Overlay) */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--tw-gradient-stops))] from-midnight-800 via-midnight-900 to-black opacity-80" />
+    <section className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-midnight-950">
+      {/* Background Ambience - Deep Midnight to Black */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-midnight-900 via-midnight-950 to-black opacity-90" />
 
-      {/* Content Container */}
-      <div className="relative z-10 text-center px-6 max-w-4xl mx-auto space-y-8">
-        {/* Animated Title */}
+      {/* Content Container - Editorial Layout */}
+      <div className="relative z-10 text-center px-6 max-w-5xl mx-auto flex flex-col items-center justify-center h-full">
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease: 'easeOut' }}
-          className="space-y-4"
+          transition={{ duration: 0.8, ease: 'easeOut' }}
+          className="space-y-10 flex flex-col items-center"
         >
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5, duration: 1 }}
-            className="text-gold-500 tracking-[0.3em] text-sm uppercase font-sans"
-          >
+          {/* Line 1: Microtext */}
+          <p className="text-gold-400 tracking-[0.4em] text-xs md:text-sm uppercase font-sans font-medium">
             Excelência em Visagismo
-          </motion.p>
+          </p>
 
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif text-gray-100 font-medium">
+          {/* Line 2: Headline */}
+          <h1 className="text-6xl md:text-8xl lg:text-9xl font-serif text-offwhite-100 font-normal leading-tight tracking-tight">
             {settings?.name || 'Júnior Lima'}
           </h1>
 
-          <p className="font-sans text-gray-400 tracking-[0.2em] text-sm md:text-base uppercase">
-            Hair Artist • {settings?.city?.split('–')[0].trim() || 'Campinas'}
-          </p>
-        </motion.div>
+          {/* Line 3: Subheadline */}
+          <div className="flex items-center gap-4 text-offwhite-300 font-sans tracking-[0.2em] text-sm md:text-base uppercase">
+            <span>Hair Artist</span>
+            <span className="text-gold-500">•</span>
+            <span>{settings?.city?.split('–')[0].trim() || 'Campinas'}</span>
+          </div>
 
-        {/* Separator Line */}
-        <motion.div
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ delay: 1, duration: 1.5, ease: 'easeInOut' }}
-          className="h-px w-24 bg-gold-500/50 mx-auto"
-        />
+          {/* Spacer */}
+          <div className="h-4" />
 
-        {/* CTA Button */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.5, duration: 0.8 }}
-        >
-          <Button
-            variant="outline"
-            className="mt-8 border-gold-500/60 text-gold-400 hover:text-midnight-900 hover:bg-gold-500 hover:border-gold-500"
-            onClick={() => navigate('/login')}
-          >
-            Agendar Experiência
-          </Button>
+          {/* CTA - WhatsApp */}
+          <div className="pt-8">
+            <a href={formatWhatsAppLink()} target="_blank" rel="noopener noreferrer">
+              <Button className="bg-transparent border border-gold-500/30 text-gold-400 hover:bg-gold-500/5 hover:text-gold-300 hover:border-gold-400/60 px-10 py-6 text-sm tracking-[0.2em] uppercase transition-all duration-700 ease-out rounded-none">
+                Agendar Experiência
+              </Button>
+            </a>
+          </div>
         </motion.div>
       </div>
-
-      {/* Background Decorative Elements (Optional - can be replaced by real image later) */}
-      <div className="absolute bottom-0 w-full h-32 bg-linear-to-t from-midnight-900 to-transparent pointer-events-none" />
     </section>
   );
 }
