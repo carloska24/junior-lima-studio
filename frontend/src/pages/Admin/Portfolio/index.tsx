@@ -276,7 +276,15 @@ export function Portfolio() {
         title={editingItem ? 'Editar Item' : 'Novo Item'}
       >
         <PortfolioForm
-          initialData={editingItem}
+          initialData={
+            editingItem
+              ? {
+                  ...editingItem,
+                  description: editingItem.description || undefined,
+                  imageUrl: editingItem.imageUrl,
+                }
+              : undefined
+          }
           onSubmit={handleSave}
           onCancel={() => setIsModalOpen(false)}
           isLoading={isSaving}

@@ -206,6 +206,7 @@ export function Services() {
               ? {
                   ...editingService,
                   description: editingService.description || '',
+                  imageUrl: editingService.imageUrl || undefined,
                   price: Number(editingService.price),
                   durationMin: Number(editingService.durationMin),
                 }
