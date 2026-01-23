@@ -19,6 +19,8 @@ const allowedOrigins = [
   'http://localhost:3000',
   'https://junior-lima-studio-app-1da7b.web.app', // Produção
   'https://junior-lima-studio-app-1da7b.firebaseapp.com',
+  'https://juniorlimastudio.com.br', // Domínio personalizado
+  'https://www.juniorlimastudio.com.br', // Domínio personalizado com www
 ];
 
 app.use(express.json());
