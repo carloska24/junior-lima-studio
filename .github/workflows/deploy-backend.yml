@@ -57,6 +57,7 @@ jobs:
         run: |
           cd backend
           npm install
+          npx prisma generate
           echo "DATABASE_URL=${{ secrets.DATABASE_URL_PRODUCTION }}" > .env
           npx prisma migrate deploy
           npx prisma db seed
