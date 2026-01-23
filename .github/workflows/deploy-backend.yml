@@ -54,13 +54,14 @@ jobs:
             JWT_SECRET=${{ secrets.JWT_SECRET }}
 
       - name: Run Migrations
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL_PRODUCTION }}
         run: |
           cd backend
           npm install
           npx prisma generate
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL_PRODUCTION }}" > .env
           npx prisma migrate deploy
-          DATABASE_URL='${{ secrets.DATABASE_URL_PRODUCTION }}' node prisma/seed.js
+          node prisma/seed.js
 
 # Retry backend deploy
 # Retry after IAM roles assignment
