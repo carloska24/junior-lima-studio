@@ -2,10 +2,7 @@ const { PrismaClient } = require('@prisma/client');
 require('dotenv').config();
 const bcrypt = require('bcryptjs');
 
-// Explicitly pass datasourceUrl for CI/CD environments where .env may not exist
-const prisma = new PrismaClient({
-  datasourceUrl: process.env.DATABASE_URL,
-});
+const prisma = new PrismaClient();
 
 async function main() {
   const email = 'admin@juniorlima.com';
