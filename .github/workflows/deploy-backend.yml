@@ -60,7 +60,7 @@ jobs:
           npx prisma generate
           echo "DATABASE_URL=${{ secrets.DATABASE_URL_PRODUCTION }}" > .env
           npx prisma migrate deploy
-          node prisma/seed.js
+          DATABASE_URL='${{ secrets.DATABASE_URL_PRODUCTION }}' node prisma/seed.js
 
 # Retry backend deploy
 # Retry after IAM roles assignment
