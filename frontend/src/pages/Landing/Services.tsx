@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Scissors, User, Palette, Sparkles, ChevronDown, ChevronUp } from 'lucide-react';
 import { apiFetch } from '@/services/api';
-import { ScrollArrow } from '@/components/ui/ScrollArrow';
 
 interface Service {
   id: string;
@@ -67,7 +66,7 @@ export function Services() {
   }
 
   return (
-    <section id="servicos" className="scroll-snap-section py-16 px-6 bg-midnight-950 w-full">
+    <section id="servicos" className="py-32 px-6 bg-midnight-950 w-full relative">
       <div className="max-w-7xl mx-auto space-y-24">
         {/* Editorial Header */}
         <div className="flex flex-col md:flex-row justify-between items-end border-b border-white/10 pb-12 gap-8">
@@ -181,9 +180,6 @@ export function Services() {
           </motion.div>
         )}
       </div>
-
-      {/* Seta para próxima seção */}
-      <ScrollArrow targetId="portfolio" />
     </section>
   );
 }

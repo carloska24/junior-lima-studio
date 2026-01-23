@@ -39,7 +39,7 @@ export function Testimonials() {
   return (
     <section
       id="depoimentos"
-      className="scroll-snap-section py-32 px-6 bg-midnight-950/50 flex flex-col items-center justify-center min-h-[60vh]"
+      className="py-32 px-6 bg-midnight-950/50 flex flex-col items-center justify-center min-h-[60vh] relative"
     >
       <div className="max-w-3xl w-full text-center relative z-10">
         {/* Minimalist Decoration */}

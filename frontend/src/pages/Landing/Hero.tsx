@@ -21,7 +21,7 @@ export function Hero({ settings }: HeroProps) {
   return (
     <section
       id="hero"
-      className="scroll-snap-section relative h-screen w-full flex items-center justify-center overflow-hidden bg-midnight-950"
+      className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-midnight-950"
     >
       {/* Background Ambience - Deep Midnight to Black */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-midnight-900 via-midnight-950 to-black opacity-90" />

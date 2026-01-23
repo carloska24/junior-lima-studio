@@ -11,10 +11,7 @@ export function Footer({ settings }: FooterProps) {
     : ['Terça a Sábado', '10:00 — 18:00'];
 
   return (
-    <footer
-      id="contato"
-      className="scroll-snap-section bg-midnight-950 pt-24 pb-12 px-6 border-t border-white/5"
-    >
+    <footer id="contato" className="bg-midnight-950 pt-24 pb-12 px-6 border-t border-white/5">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-12 md:gap-24">
         {/* Brand Column */}
         <div className="space-y-4">

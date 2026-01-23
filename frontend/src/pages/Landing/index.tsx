@@ -19,7 +19,7 @@ export function LandingPage() {
   }, []);
 
   return (
-    <main className="scroll-snap-container bg-midnight-950 text-offwhite-200">
+    <main className="bg-midnight-950 min-h-screen text-offwhite-200">
       <Hero settings={settings} />
       <Visagismo />
       <Services />

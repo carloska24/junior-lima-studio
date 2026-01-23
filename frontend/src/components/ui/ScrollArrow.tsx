@@ -9,21 +9,8 @@ export function ScrollArrow({ targetId }: ScrollArrowProps) {
   const handleClick = () => {
     if (targetId) {
       const target = document.getElementById(targetId);
-      const container = document.querySelector('.scroll-snap-container');
-
-      if (target && container) {
-        // Calcular posição do target dentro do container
-        const targetRect = target.getBoundingClientRect();
-        const containerRect = container.getBoundingClientRect();
-        const scrollTop = container.scrollTop + targetRect.top - containerRect.top;
-
-        container.scrollTo({
-          top: scrollTop,
-          behavior: 'smooth',
-        });
-      } else if (target) {
-        // Fallback se não houver container
-        target.scrollIntoView({ behavior: 'smooth' });
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     }
   };

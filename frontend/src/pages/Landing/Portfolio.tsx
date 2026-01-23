@@ -96,10 +96,7 @@ export function Portfolio({ settings }: PortfolioProps) {
   }
 
   return (
-    <section
-      id="portfolio"
-      className="scroll-snap-section py-32 px-6 bg-midnight-950 border-t border-white/5"
-    >
+    <section id="portfolio" className="py-32 px-6 bg-midnight-950 border-t border-white/5 relative">
       {/* Section Header */}
       <div className="max-w-6xl mx-auto mb-24 space-y-6 text-center">
         <motion.h2
