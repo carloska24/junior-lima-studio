@@ -106,14 +106,14 @@ export function Services() {
                   )}
                 >
                   {/* Image ou Placeholder */}
-                  <div className="overflow-hidden aspect-4/5 bg-midnight-900 relative">
-                    <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-10 transition-opacity duration-700 z-10" />
+                  <div className="bg-midnight-900 relative">
+                    <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-10 transition-opacity duration-700 z-10 pointer-events-none" />
                     {service.imageUrl ? (
                       <motion.img
                         src={service.imageUrl}
                         alt={service.name}
-                        className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 opacity-80 group-hover:opacity-100 transition-all duration-700"
-                        whileHover={{ scale: 1.05 }}
+                        className="w-full h-auto object-contain filter grayscale group-hover:grayscale-0 opacity-80 group-hover:opacity-100 transition-all duration-700"
+                        whileHover={{ scale: 1.02 }}
                         transition={{ duration: 0.7, ease: 'easeOut' }}
                         loading="lazy"
                       />

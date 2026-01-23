@@ -1,4 +1,4 @@
-# Guia de Deploy - Júnior Lima Hair Artist
+oy# Guia de Deploy - Júnior Lima Hair Artist
 
 Este guia detalha o processo de publicação do sistema em ambiente de produção utilizando Google Cloud Platform e Firebase.
 
