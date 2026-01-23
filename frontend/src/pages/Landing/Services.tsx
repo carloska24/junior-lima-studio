@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Scissors, User, Palette, Sparkles, ChevronDown, ChevronUp } from 'lucide-react';
 import { apiFetch } from '@/services/api';
+import { ScrollArrow } from '@/components/ui/ScrollArrow';
 
 interface Service {
   id: string;
@@ -112,7 +113,7 @@ export function Services() {
                       <motion.img
                         src={service.imageUrl}
                         alt={service.name}
-                        className="w-full max-h-[35vh] object-cover rounded-lg opacity-95 transition-all duration-500"
+                        className="w-full h-auto object-contain opacity-90 transition-all duration-500"
                         whileHover={{ scale: 1.02 }}
                         transition={{ duration: 0.7, ease: 'easeOut' }}
                         loading="lazy"
@@ -180,6 +181,9 @@ export function Services() {
           </motion.div>
         )}
       </div>
+
+      {/* Seta para próxima seção */}
+      <ScrollArrow targetId="portfolio" />
     </section>
   );
 }

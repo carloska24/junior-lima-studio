@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ScrollArrow } from '@/components/ui/ScrollArrow';
 
 const testimonials = [
   {
@@ -86,6 +87,9 @@ export function Testimonials() {
           ))}
         </div>
       </div>
+
+      {/* Seta para próxima seção */}
+      <ScrollArrow targetId="contato" />
     </section>
   );
 }

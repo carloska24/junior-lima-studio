@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { Sparkles, Eye, Palette, Crown, ArrowRight } from 'lucide-react';
+import { ScrollArrow } from '@/components/ui/ScrollArrow';
 
 const pillars = [
   {
@@ -314,6 +315,9 @@ export function Visagismo() {
           </motion.div>
         </div>
       </div>
+
+      {/* Seta para próxima seção */}
+      <ScrollArrow targetId="servicos" />
     </section>
   );
 }

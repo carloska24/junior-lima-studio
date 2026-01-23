@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { apiFetch } from '@/services/api';
 import { Instagram } from 'lucide-react';
 import type { StudioSettings } from '@/types/studio';
+import { ScrollArrow } from '@/components/ui/ScrollArrow';
 
 interface PortfolioItem {
   id: string;
@@ -164,6 +165,9 @@ export function Portfolio({ settings }: PortfolioProps) {
           </Button>
         </a>
       </div>
+
+      {/* Seta para próxima seção */}
+      <ScrollArrow targetId="depoimentos" />
     </section>
   );
 }
