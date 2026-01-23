@@ -135,7 +135,10 @@ const faceShapes = [
 
 export function Visagismo() {
   return (
-    <section className="py-32 px-6 bg-midnight-900 relative overflow-hidden">
+    <section
+      id="visagismo"
+      className="scroll-snap-section py-32 px-6 bg-midnight-900 relative overflow-hidden"
+    >
       {/* Subtle Background Element */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gold-500/5 via-transparent to-transparent pointer-events-none" />
 

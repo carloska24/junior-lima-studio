@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
+import { ScrollArrow } from '@/components/ui/ScrollArrow';
 import type { StudioSettings } from '@/types/studio';
 
 interface HeroProps {
@@ -18,7 +19,10 @@ export function Hero({ settings }: HeroProps) {
   };
 
   return (
-    <section className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-midnight-950">
+    <section
+      id="hero"
+      className="scroll-snap-section relative h-screen w-full flex items-center justify-center overflow-hidden bg-midnight-950"
+    >
       {/* Background Ambience - Deep Midnight to Black */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-midnight-900 via-midnight-950 to-black opacity-90" />
 
@@ -60,6 +64,9 @@ export function Hero({ settings }: HeroProps) {
           </div>
         </motion.div>
       </div>
+
+      {/* Seta animada para próxima seção */}
+      <ScrollArrow targetId="visagismo" />
     </section>
   );
 }

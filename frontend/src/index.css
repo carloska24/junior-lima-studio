@@ -89,4 +89,17 @@
     -webkit-text-fill-color: white !important;
     transition: background-color 5000s ease-in-out 0s;
   }
+
+  /* Full Page Scroll Snap */
+  .scroll-snap-container {
+    scroll-snap-type: y mandatory;
+    overflow-y: scroll;
+    height: 100vh;
+    scroll-behavior: smooth;
+  }
+
+  .scroll-snap-section {
+    scroll-snap-align: start;
+    min-height: 100vh;
+  }
 }

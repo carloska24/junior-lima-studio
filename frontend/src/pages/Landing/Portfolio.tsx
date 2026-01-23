@@ -95,7 +95,10 @@ export function Portfolio({ settings }: PortfolioProps) {
   }
 
   return (
-    <section className="py-32 px-6 bg-midnight-950 border-t border-white/5">
+    <section
+      id="portfolio"
+      className="scroll-snap-section py-32 px-6 bg-midnight-950 border-t border-white/5"
+    >
       {/* Section Header */}
       <div className="max-w-6xl mx-auto mb-24 space-y-6 text-center">
         <motion.h2
@@ -128,7 +131,7 @@ export function Portfolio({ settings }: PortfolioProps) {
               <img
                 src={item.imageUrl}
                 alt={item.title}
-                className="w-full h-auto object-cover transition-all duration-1000 group-hover:scale-105 filter grayscale group-hover:grayscale-0 opacity-80 group-hover:opacity-100"
+                className="w-full h-auto object-cover transition-all duration-1000 group-hover:scale-105 opacity-90"
                 loading="lazy"
                 onError={e => {
                   // Fallback se a imagem falhar

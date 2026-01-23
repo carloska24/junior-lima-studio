@@ -36,7 +36,10 @@ export function Testimonials() {
   }, []);
 
   return (
-    <section className="py-32 px-6 bg-midnight-950/50 flex flex-col items-center justify-center min-h-[60vh]">
+    <section
+      id="depoimentos"
+      className="scroll-snap-section py-32 px-6 bg-midnight-950/50 flex flex-col items-center justify-center min-h-[60vh]"
+    >
       <div className="max-w-3xl w-full text-center relative z-10">
         {/* Minimalist Decoration */}
         <div className="w-px h-12 bg-white/10 mx-auto mb-12" />

@@ -66,7 +66,7 @@ export function Services() {
   }
 
   return (
-    <section className="py-32 px-6 bg-midnight-950 w-full">
+    <section id="servicos" className="scroll-snap-section py-16 px-6 bg-midnight-950 w-full">
       <div className="max-w-7xl mx-auto space-y-24">
         {/* Editorial Header */}
         <div className="flex flex-col md:flex-row justify-between items-end border-b border-white/10 pb-12 gap-8">
@@ -112,7 +112,7 @@ export function Services() {
                       <motion.img
                         src={service.imageUrl}
                         alt={service.name}
-                        className="w-full h-auto object-contain filter grayscale group-hover:grayscale-0 opacity-80 group-hover:opacity-100 transition-all duration-700"
+                        className="w-full max-h-[35vh] object-cover rounded-lg opacity-95 transition-all duration-500"
                         whileHover={{ scale: 1.02 }}
                         transition={{ duration: 0.7, ease: 'easeOut' }}
                         loading="lazy"
