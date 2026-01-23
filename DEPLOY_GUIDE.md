@@ -135,3 +135,125 @@ O backend já possui um `Dockerfile` configurado na pasta `backend/`.
 
 - **Logs:** Use o painel "Logs" do Cloud Run para debugar erros no backend.
 - **Custos:** Cloud Run e Firebase tem níveis gratuitos generosos, mas monitore o Cloud SQL que é cobrado por hora.
+
+---
+
+## 6. Deploy Automático (CI/CD com GitHub Actions)
+
+O projeto possui automação de deploy via GitHub Actions. Ao fazer push para a branch `main`, os workflows são disparados automaticamente.
+
+### Workflows Configurados
+
+| Arquivo                                 | Trigger               | Ação                                                       |
+| --------------------------------------- | --------------------- | ---------------------------------------------------------- |
+| `.github/workflows/deploy-backend.yml`  | Push em `backend/**`  | Build Docker → Push → Deploy Cloud Run → Migrations → Seed |
+| `.github/workflows/deploy-frontend.yml` | Push em `frontend/**` | Build → Deploy Firebase Hosting                            |
+
+### Secrets Necessários (GitHub Settings > Secrets)
+
+| Secret                         | Descrição                                                         |
+| ------------------------------ | ----------------------------------------------------------------- |
+| `DATABASE_URL_PRODUCTION`      | URL completa do PostgreSQL: `postgresql://user:pass@host:5432/db` |
+| `GCP_CREDENTIALS`              | JSON da Service Account do GCP                                    |
+| `JWT_SECRET`                   | Chave secreta para tokens JWT                                     |
+| `FIREBASE_SERVICE_ACCOUNT_...` | Service Account do Firebase para deploy                           |
+
+### Fluxo do Backend
+
+```
+1. Build Docker (usa prisma.config.ts para validar)
+2. Push para Artifact Registry
+3. Deploy no Cloud Run
+4. Run Migrations (npx prisma migrate deploy)
+5. Seed Database (node prisma/seed.js)
+```
+
+---
+
+## 7. Prisma 7 - Notas de Compatibilidade
+
+> ⚠️ **IMPORTANTE:** O Prisma 7 tem uma arquitetura diferente das versões anteriores!
+
+### O que mudou no Prisma 7
+
+| Antes (Prisma < 7)                             | Agora (Prisma 7)                         |
+| ---------------------------------------------- | ---------------------------------------- |
+| `url = env("DATABASE_URL")` no `schema.prisma` | **DEPRECATED** - Causa erro de validação |
+| `new PrismaClient()` simples                   | Requer **adapter** para conexão          |
+| Configuração implícita                         | Requer `prisma.config.ts` explícito      |
+
+### Arquivos Críticos para Prisma 7
+
+1. **`prisma.config.ts`** (raiz do backend)
+
+   ```typescript
+   import 'dotenv/config';
+   import { defineConfig } from 'prisma/config';
+
+   export default defineConfig({
+     schema: 'prisma/schema.prisma',
+     migrations: { path: 'prisma/migrations' },
+     datasource: {
+       url: process.env['DATABASE_URL'],
+     },
+   });
+   ```
+
+2. **`schema.prisma`** (NÃO inclua `url`!)
+
+   ```prisma
+   datasource db {
+     provider = "postgresql"
+     // NÃO adicione url aqui no Prisma 7!
+   }
+   ```
+
+3. **`src/lib/prisma.ts`** (Conexão com adapter)
+
+   ```typescript
+   import { PrismaClient } from '@prisma/client';
+   import { PrismaPg } from '@prisma/adapter-pg';
+   import { Pool } from 'pg';
+
+   const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+   const adapter = new PrismaPg(pool);
+   export const prisma = new PrismaClient({ adapter });
+   ```
+
+4. **`prisma/seed.js`** (Deve usar o MESMO padrão do adapter!)
+
+   ```javascript
+   const { PrismaClient } = require('@prisma/client');
+   const { PrismaPg } = require('@prisma/adapter-pg');
+   const { Pool } = require('pg');
+
+   const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+   const adapter = new PrismaPg(pool);
+   const prisma = new PrismaClient({ adapter });
+   ```
+
+### Dockerfile para Prisma 7
+
+O Dockerfile precisa:
+
+1. Copiar `prisma.config.ts`
+2. Definir `DATABASE_URL` placeholder para o build
+
+```dockerfile
+# Placeholder para prisma generate funcionar no build
+ENV DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/placeholder"
+
+COPY prisma.config.ts ./
+COPY prisma ./prisma/
+
+RUN npx prisma generate
+```
+
+### Troubleshooting Comum
+
+| Erro                                             | Causa                           | Solução                                |
+| ------------------------------------------------ | ------------------------------- | -------------------------------------- |
+| `datasource property url is no longer supported` | `url` no schema.prisma          | Remover linha `url = env()` do schema  |
+| `PrismaClientConstructorValidationError`         | Falta adapter                   | Usar `PrismaPg` + `Pool` no construtor |
+| `Validation Error Count: 1 [getConfig]`          | prisma.config.ts não encontrado | Copiar arquivo no Dockerfile           |
+| Seed falha com `***` mascarado                   | `DATABASE_URL` não injetado     | Usar `env:` no step do workflow        |
