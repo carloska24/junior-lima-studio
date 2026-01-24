@@ -55,7 +55,7 @@ export class CategoryController {
 
     try {
       const category = await prisma.category.update({
-        where: { id },
+        where: { id: String(id) },
         data: {
           name: typeof name === 'string' ? name : undefined,
           order: order !== undefined ? Number(order) : undefined,
