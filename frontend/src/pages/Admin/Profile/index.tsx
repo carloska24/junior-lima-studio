@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { apiFetch } from '@/services/api';
 import { useForm } from 'react-hook-form';
-import { Save, User, Shield } from 'lucide-react';
+// import { Save, User, Shield } from 'lucide-react'; // Removed unused imports
 import { ImageUpload } from '@/components/ui/ImageUpload';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -26,7 +26,6 @@ export function Profile() {
     register: registerProfile,
     handleSubmit: handleSubmitProfile,
     setValue: setProfileValue,
-    watch: watchProfile,
   } = useForm<{ name: string; avatarUrl: string }>();
 
   // Password Form
@@ -34,7 +33,6 @@ export function Profile() {
     register: registerPass,
     handleSubmit: handleSubmitPass,
     reset: resetPass,
-    formState: { errors: errorsPass },
   } = useForm<{ oldPassword: string; password: string; confirmPassword: string }>();
 
   // --- RESTORED LOGIC ---
