@@ -37,17 +37,16 @@ export class CategoryController {
   }
 
   async create(req: Request, res: Response) {
-    const body = req.body as UpdateReqBody;
-    const { name, order, coverImageUrl } = body;
+    const { name, order, coverImageUrl } = req.body;
 
-    if (!name || typeof name !== 'string')
-      return res.status(400).json({ error: 'Nome obrigatório' });
+    if (!name) return res.status(400).json({ error: 'Nome obrigatório' });
 
     try {
       const category = await prisma.category.create({
         data: {
-          name,
-          order: Number(order) || 99,
+          name: String(name),
+          order: order ? Number(order) : 99,
+          // Force undefined if not a string to match Prisma optional input
           coverImageUrl: typeof coverImageUrl === 'string' ? coverImageUrl : undefined,
         },
       });
@@ -59,21 +58,18 @@ export class CategoryController {
 
   async update(req: Request, res: Response) {
     const { id } = req.params;
-    const { name, order, active, coverImageUrl } = req.body;
-
-    const safeName = typeof name === 'string' ? name : undefined;
-    const safeOrder = order !== undefined ? Number(order) : undefined;
-    const safeActive = active !== undefined ? Boolean(active) : undefined;
-    const safeCover = typeof coverImageUrl === 'string' ? coverImageUrl : null;
+    // Separate destructuring to avoid implicit any issues
+    const props = req.body;
 
     try {
       const category = await prisma.category.update({
         where: { id },
         data: {
-          name: safeName,
-          order: safeOrder,
-          active: safeActive,
-          coverImageUrl: safeCover,
+          name: props.name ? String(props.name) : undefined,
+          order: props.order !== undefined ? Number(props.order) : undefined,
+          active: props.active !== undefined ? Boolean(props.active) : undefined,
+          // Explicitly handle null for database
+          coverImageUrl: typeof props.coverImageUrl === 'string' ? props.coverImageUrl : null,
         },
       });
       return res.json(category);
