@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { apiFetch } from '@/services/api';
 import { useToast } from '@/contexts/ToastContext';
-import { Loader2, Save, GripVertical } from 'lucide-react';
+import { Loader2, Save, GripVertical, Trash2 } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/Table';
+import { ConfirmModal } from '@/components/ui/ConfirmModal';
 
 interface Category {
   id: string;
@@ -26,6 +27,29 @@ const Categories = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
   const { addToast } = useToast();
+
+  // Logic for deletion
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+
+  const handleDelete = async () => {
+    if (!deleteId) return;
+    try {
+      const response = await apiFetch(`/categories/${deleteId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Erro ao deletar categoria');
+      }
+
+      setCategories(prev => prev.filter(c => c.id !== deleteId));
+      addToast('Categoria deletada com sucesso!', 'success');
+      setDeleteId(null);
+    } catch (error: any) {
+      addToast(error.message, 'error');
+    }
+  };
 
   const fetchCategories = async () => {
     try {
@@ -108,6 +132,15 @@ const Categories = () => {
           </button>
         )}
       </header>
+      <ConfirmModal
+        isOpen={!!deleteId}
+        onClose={() => setDeleteId(null)}
+        onConfirm={handleDelete}
+        title="Excluir Categoria"
+        message="Tem certeza que deseja excluir esta categoria? Esta ação não pode ser desfeita."
+        confirmText="Excluir"
+        variant="danger"
+      />
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
         <Table>
@@ -117,11 +150,13 @@ const Categories = () => {
               <TableHead className="w-[80px]">Capa</TableHead>
               <TableHead className="w-[200px]">Nome</TableHead>
               <TableHead>URL da Capa (Opcional)</TableHead>
+              <TableHead className="w-[60px]"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {categories.map(cat => (
               <TableRow key={cat.id}>
+                {/* ... (Existing cells) */}
                 <TableCell>
                   <div className="flex items-center gap-2">
                     <GripVertical className="text-gray-300" size={16} />
@@ -148,7 +183,7 @@ const Categories = () => {
                     )}
                   </div>
                 </TableCell>
-                <TableCell className="font-medium text-lg">{cat.name}</TableCell>
+                <TableCell className="font-medium text-lg text-midnight-900">{cat.name}</TableCell>
                 <TableCell>
                   <input
                     type="text"
@@ -157,6 +192,14 @@ const Categories = () => {
                     onChange={e => handleChange(cat.id, 'coverImageUrl', e.target.value)}
                     className="w-full px-3 py-1 text-sm border border-gray-200 rounded focus:border-gold-500 outline-none placeholder:text-gray-300"
                   />
+                </TableCell>
+                <TableCell>
+                  <button
+                    onClick={() => setDeleteId(cat.id)}
+                    className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-md transition-colors"
+                  >
+                    <Trash2 size={18} />
+                  </button>
                 </TableCell>
               </TableRow>
             ))}

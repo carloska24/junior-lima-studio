@@ -13,3 +13,4 @@ categoryRoutes.get('/admin', authMiddleware, categoryController.listAll);
 categoryRoutes.post('/', authMiddleware, categoryController.create);
 categoryRoutes.put('/reorder', authMiddleware, categoryController.reorder); // Reorder must be before :id to avoid conflict if not strict regex, but here put is safe
 categoryRoutes.put('/:id', authMiddleware, categoryController.update);
+categoryRoutes.delete('/:id', authMiddleware, categoryController.delete);

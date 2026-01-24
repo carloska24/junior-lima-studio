@@ -91,4 +91,30 @@ export class CategoryController {
       return res.status(500).json({ error: 'Erro ao reordenar' });
     }
   }
+
+  async delete(req: Request, res: Response) {
+    const { id } = req.params;
+
+    try {
+      // Check if category has items
+      const itemsCount = await prisma.portfolioItem.count({
+        where: { categoryId: String(id) },
+      });
+
+      if (itemsCount > 0) {
+        return res.status(400).json({
+          error: 'Não é possível deletar esta categoria pois existem itens associados a ela.',
+        });
+      }
+
+      await prisma.category.delete({
+        where: { id: String(id) },
+      });
+
+      return res.status(204).send();
+    } catch (error) {
+      console.error('Error deleting category:', error);
+      return res.status(500).json({ error: 'Erro ao deletar categoria' });
+    }
+  }
 }
