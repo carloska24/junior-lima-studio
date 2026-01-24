@@ -125,7 +125,9 @@ Domingo: Fechado`,
   }
 
   // Backfill Categories from PortfolioItems
-  // This ensures legacy data generates proper Category entities
+  // Define priority order for main categories
+  const priorityList = ['Visagismo', 'Corte', 'Barba', 'Loiro', 'Mechas', 'Coloração'];
+
   const allItems = await prisma.portfolioItem.findMany({
     select: { category: true },
   });
@@ -134,23 +136,37 @@ Domingo: Fechado`,
 
   console.log(`Found ${uniqueCategories.length} unique categories to sync.`);
 
-  for (const catName of uniqueCategories) {
-    const exists = await prisma.category.findFirst({
-      where: { name: { equals: catName, mode: 'insensitive' } },
-    });
+  // Sort uniqueCategories: Priority items first, then others alphabetically
+  uniqueCategories.sort((a, b) => {
+    const idxA = priorityList.indexOf(a);
+    const idxB = priorityList.indexOf(b);
+    if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+    if (idxA !== -1) return -1;
+    if (idxB !== -1) return 1;
+    return a.localeCompare(b);
+  });
 
-    if (!exists) {
-      await prisma.category.create({
-        data: {
-          name: catName,
-          order: 99, // Default order for migrated items
-          active: true,
-        },
-      });
-      console.log(`Created category: ${catName}`);
-    }
+  let orderCounter = 1;
+
+  for (const catName of uniqueCategories) {
+    // Upsert ensures we correct the order even if category exists
+    await prisma.category.upsert({
+      where: { name: catName },
+      update: {
+        // Only update order if it's currently the default "migrated" value (99) to avoid overwriting user manual changes?
+        // User requested explicit fix, so we force order reset for now to clean up the "99" mess.
+        order: orderCounter,
+      },
+      create: {
+        name: catName,
+        order: orderCounter,
+        active: true,
+      },
+    });
+    console.log(`Synced category: ${catName} (Order: ${orderCounter})`);
+    orderCounter++;
   }
-  console.log('Categories synced');
+  console.log('Categories synced and reordered');
 }
 
 main()

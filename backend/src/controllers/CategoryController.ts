@@ -38,7 +38,7 @@ export class CategoryController {
       const category = await prisma.category.create({
         data: {
           name: String(name),
-          order: order ? Number(order) : 99,
+          order: order ? Number(order) : 5,
           // Force undefined if not a string to match Prisma optional input
           coverImageUrl: typeof coverImageUrl === 'string' ? coverImageUrl : undefined,
         },
