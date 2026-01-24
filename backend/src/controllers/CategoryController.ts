@@ -36,9 +36,9 @@ export class CategoryController {
     try {
       const category = await prisma.category.create({
         data: {
-          name: name as string,
-          order: (order as number) || 99,
-          coverImageUrl: coverImageUrl as string | undefined,
+          name: String(name),
+          order: Number(order) || 99,
+          coverImageUrl: typeof coverImageUrl === 'string' ? coverImageUrl : undefined,
         },
       });
       return res.status(201).json(category);
@@ -55,10 +55,10 @@ export class CategoryController {
       const category = await prisma.category.update({
         where: { id },
         data: {
-          name: name as string,
-          order: order as number,
-          active: active as boolean,
-          coverImageUrl: coverImageUrl as string | null,
+          name: String(name),
+          order: Number(order) || 0,
+          active: active !== undefined ? Boolean(active) : undefined,
+          coverImageUrl: typeof coverImageUrl === 'string' ? coverImageUrl : null,
         },
       });
       return res.json(category);
