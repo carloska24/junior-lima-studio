@@ -21,7 +21,7 @@ export function LandingPage() {
   return (
     <main className="bg-midnight-950 min-h-screen text-offwhite-200">
       <Hero settings={settings} />
-      <Visagismo />
+      <Visagismo settings={settings} />
       <Services />
       <Portfolio settings={settings} />
       <Testimonials />

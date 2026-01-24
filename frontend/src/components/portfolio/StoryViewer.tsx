@@ -1,0 +1,218 @@
+import { useRef, useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X } from 'lucide-react';
+import type { PortfolioItem } from '@/types/studio';
+
+interface StoryViewerProps {
+  stories: PortfolioItem[];
+  initialStoryIndex?: number;
+  onClose: () => void;
+  onNextCategory?: () => void;
+  onPrevCategory?: () => void;
+}
+
+export function StoryViewer({
+  stories,
+  initialStoryIndex = 0,
+  onClose,
+  onNextCategory,
+  onPrevCategory,
+}: StoryViewerProps) {
+  const [currentIndex, setCurrentIndex] = useState(initialStoryIndex);
+  const [isPaused, setIsPaused] = useState(false);
+  const [progress, setProgress] = useState(0);
+
+  const STORY_DURATION = 5000;
+  const progressInterval = useRef<number | null>(null);
+  const startTime = useRef<number>(0);
+  const pausedAt = useRef<number>(0);
+
+  // Memoized handlers to prevent dependency cycles
+  const handleNext = useCallback(() => {
+    if (currentIndex < stories.length - 1) {
+      setCurrentIndex(prev => prev + 1);
+    } else if (onNextCategory) {
+      onNextCategory();
+    } else {
+      onClose();
+    }
+  }, [currentIndex, stories.length, onNextCategory, onClose]);
+
+  const handlePrev = useCallback(() => {
+    if (currentIndex > 0) {
+      setCurrentIndex(prev => prev - 1);
+    } else if (onPrevCategory) {
+      onPrevCategory();
+    }
+  }, [currentIndex, onPrevCategory]);
+
+  const handlePause = useCallback(() => {
+    setIsPaused(true);
+    pausedAt.current = Date.now();
+  }, []);
+
+  const handleResume = useCallback(() => {
+    const now = Date.now();
+    const pauseDuration = now - pausedAt.current;
+    startTime.current += pauseDuration;
+    setIsPaused(false);
+  }, []);
+
+  // Reinicia story e timers quando muda o índice
+  useEffect(() => {
+    setProgress(0);
+    startTime.current = Date.now();
+    pausedAt.current = 0;
+    setIsPaused(false);
+  }, [currentIndex]);
+
+  // Timer de progresso
+  useEffect(() => {
+    if (isPaused) {
+      if (progressInterval.current) cancelAnimationFrame(progressInterval.current);
+      return;
+    }
+
+    const animateProgress = () => {
+      const now = Date.now();
+      const elapsed = now - startTime.current;
+      const percentage = (elapsed / STORY_DURATION) * 100;
+
+      if (percentage >= 100) {
+        if (progressInterval.current) cancelAnimationFrame(progressInterval.current);
+        handleNext();
+      } else {
+        setProgress(percentage);
+        progressInterval.current = requestAnimationFrame(animateProgress);
+      }
+    };
+
+    progressInterval.current = requestAnimationFrame(animateProgress);
+
+    return () => {
+      if (progressInterval.current) cancelAnimationFrame(progressInterval.current);
+    };
+  }, [currentIndex, isPaused, handleNext]);
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black flex items-center justify-center">
+      {/* Background Blur (Desktop) */}
+      <div
+        className="absolute inset-0 opacity-30 blur-3xl scale-110"
+        style={{
+          backgroundImage: `url(${stories[currentIndex].imageUrl})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      />
+
+      <div className="relative w-full md:max-w-[450px] h-full md:h-[90vh] bg-midnight-950 md:rounded-2xl overflow-hidden shadow-2xl flex flex-col">
+        {/* Header: Progress Bars & Close */}
+        <div className="absolute top-0 left-0 right-0 z-20 p-4 pt-6 md:pt-4 bg-linear-to-b from-black/80 to-transparent">
+          <div className="flex gap-1 mb-3">
+            {stories.map((_, idx) => (
+              <div key={idx} className="h-0.5 flex-1 bg-white/20 rounded-full overflow-hidden">
+                <motion.div
+                  className="h-full bg-white"
+                  initial={{ width: idx < currentIndex ? '100%' : '0%' }}
+                  animate={{
+                    width:
+                      idx < currentIndex ? '100%' : idx === currentIndex ? `${progress}%` : '0%',
+                  }}
+                  transition={{ duration: 0, ease: 'linear' }}
+                />
+              </div>
+            ))}
+          </div>
+
+          <div className="flex justify-between items-center">
+            {/* User Info */}
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full bg-gold-500/20 border border-gold-500 flex items-center justify-center overflow-hidden">
+                <span className="font-serif text-gold-400 text-xs font-bold">JL</span>
+              </div>
+              <span className="text-white text-sm font-medium drop-shadow-md">
+                {stories[currentIndex].category}
+              </span>
+              <span className="text-white/60 text-xs">• {idxToTimeAgo(currentIndex)}</span>
+            </div>
+
+            <button
+              onClick={onClose}
+              className="p-2 text-white hover:text-gold-400 transition-colors"
+            >
+              <X size={24} />
+            </button>
+          </div>
+        </div>
+
+        {/* Main Content Area (Image) */}
+        <div
+          className="flex-1 relative cursor-pointer"
+          onPointerDown={handlePause}
+          onPointerUp={handleResume}
+          onPointerLeave={handleResume}
+        >
+          <AnimatePresence mode="wait">
+            <motion.img
+              key={stories[currentIndex].id}
+              src={stories[currentIndex].imageUrl}
+              alt={stories[currentIndex].title}
+              className="absolute inset-0 w-full h-full object-cover"
+              initial={{ opacity: 0.8, scale: 1.05 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0.8 }}
+              transition={{ duration: 0.3 }}
+            />
+          </AnimatePresence>
+
+          {/* Gradient Overlay Bottom */}
+          <div className="absolute bottom-0 inset-x-0 h-1/3 bg-linear-to-t from-black/90 via-black/40 to-transparent pointer-events-none"></div>
+
+          {/* Caption / Title */}
+          <div className="absolute bottom-0 inset-x-0 p-8 pb-12 z-10">
+            <motion.div
+              key={`text-${stories[currentIndex].id}`}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+            >
+              <h3 className="text-2xl font-serif text-white mb-2 shadow-black drop-shadow-lg">
+                {stories[currentIndex].title}
+              </h3>
+              {stories[currentIndex].description && (
+                <p className="text-offwhite-200 text-sm line-clamp-2 drop-shadow-md">
+                  {stories[currentIndex].description}
+                </p>
+              )}
+            </motion.div>
+          </div>
+
+          {/* Navigation Touch Areas */}
+          <div className="absolute inset-0 flex z-0">
+            <div
+              className="w-1/3 h-full"
+              onClick={e => {
+                e.stopPropagation();
+                handlePrev();
+              }}
+            />
+            <div
+              className="w-2/3 h-full"
+              onClick={e => {
+                e.stopPropagation();
+                handleNext();
+              }}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Helper fake para "tempo atrás"
+function idxToTimeAgo(idx: number): string {
+  const times = ['2h', '5h', '1d', '2d', '1sem'];
+  return times[idx % times.length];
+}

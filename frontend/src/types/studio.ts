@@ -9,3 +9,13 @@ export interface StudioSettings {
   openingHours: string;
   instagramUrl: string;
 }
+
+export interface PortfolioItem {
+  id: string;
+  title: string;
+  category: string;
+  imageUrl: string;
+  description?: string;
+  order?: number;
+  active?: boolean;
+}

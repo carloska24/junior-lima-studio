@@ -1,6 +1,11 @@
 import { motion } from 'framer-motion';
 import { Sparkles, Eye, Palette, Crown, ArrowRight } from 'lucide-react';
 import { ScrollArrow } from '@/components/ui/ScrollArrow';
+import type { StudioSettings } from '@/types/studio';
+
+interface VisagismoProps {
+  settings?: StudioSettings | null;
+}
 
 const pillars = [
   {
@@ -134,7 +139,18 @@ const faceShapes = [
   },
 ];
 
-export function Visagismo() {
+export function Visagismo({ settings }: VisagismoProps) {
+  // Formata o número de WhatsApp para link
+  const formatWhatsAppLink = () => {
+    // Tenta usar WhatsApp, depois telefone, depois fallback
+    const whatsapp = settings?.whatsapp || settings?.phone || '5519990681759';
+    const cleanNumber = whatsapp.replace(/\D/g, '');
+    const message = encodeURIComponent(
+      `Olá! Gostaria de agendar uma análise facial e visagismo no ${settings?.name || 'Júnior Lima Studio'}. ✨`
+    );
+    return `https://wa.me/${cleanNumber}?text=${message}`;
+  };
+
   return (
     <section id="visagismo" className="py-32 px-6 bg-midnight-900 relative overflow-hidden">
       {/* Subtle Background Element */}
@@ -303,7 +319,9 @@ export function Visagismo() {
             className="mt-16 text-center"
           >
             <a
-              href="#agendar"
+              href={formatWhatsAppLink()}
+              target="_blank"
+              rel="noopener noreferrer"
               className="group inline-flex items-center gap-3 px-8 py-4 bg-gold-500 hover:bg-gold-400 text-midnight-950 font-sans font-semibold text-sm tracking-wide rounded-full transition-all duration-500 hover:shadow-lg hover:shadow-gold-500/20"
             >
               <span>Agende sua Análise Facial</span>
