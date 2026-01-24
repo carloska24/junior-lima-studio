@@ -64,6 +64,18 @@
     letter-spacing: 0.15em;
   }
 
+  /* Hardware Acceleration Utilities */
+  .backface-hidden {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+  }
+
+  .transform-gpu {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+
   /* Micro-interactions */
   .hover-scale-gentle {
     @apply transition-transform duration-700 ease-out hover:scale-[1.02];

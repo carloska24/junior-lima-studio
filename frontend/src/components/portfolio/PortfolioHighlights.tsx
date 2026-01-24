@@ -21,15 +21,15 @@ export function PortfolioHighlights({ categories, onSelectCategory }: PortfolioH
             className="flex flex-col items-center gap-3 group"
           >
             {/* Circle Wrapper with Gradient Border */}
-            <div className="relative p-[3px] rounded-full bg-linear-to-tr from-gold-600 via-gold-400 to-gold-200 group-hover:scale-105 transition-transform duration-300">
+            <div className="relative p-[3px] rounded-full bg-linear-to-tr from-gold-600 via-gold-400 to-gold-200 group-hover:scale-105 transition-transform duration-300 transform-gpu backface-hidden">
               {/* Black spacing between border and image */}
-              <div className="bg-midnight-950 p-[2px] rounded-full">
-                {/* Image Container */}
-                <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden bg-midnight-800">
+              <div className="bg-midnight-950 p-[2px] rounded-full overflow-hidden backface-hidden transform-gpu">
+                {/* Image Container - with transparent border hack for antialiasing */}
+                <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden bg-midnight-800 border-2 border-transparent transform-gpu backface-hidden">
                   <img
                     src={category.coverImage}
                     alt={category.name}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 backface-hidden"
                   />
                 </div>
               </div>
