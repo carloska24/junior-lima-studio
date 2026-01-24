@@ -72,19 +72,31 @@ export function Portfolio({ settings }: PortfolioProps) {
   useEffect(() => {
     async function fetchPortfolio() {
       try {
-        const response = await apiFetch('/portfolio');
-        let data: PortfolioItem[] = [];
+        setLoading(true);
+        // Execute parallel fetch
+        const [itemsResponse, categoriesResponse] = await Promise.all([
+          apiFetch('/portfolio'),
+          apiFetch('/categories'), // Public endpoint for ordered categories
+        ]);
 
-        if (response.ok) {
-          data = await response.json();
+        let itemsData: PortfolioItem[] = [];
+        let categoriesData: any[] = [];
+
+        if (itemsResponse.ok) {
+          itemsData = await itemsResponse.json();
+        }
+        if (categoriesResponse.ok) {
+          categoriesData = await categoriesResponse.json();
         }
 
-        const itemsToUse = data.length > 0 ? data : fallbackItems;
-        const grouped = groupItemsByCategory(itemsToUse);
+        const itemsToUse = itemsData.length > 0 ? itemsData : fallbackItems;
+
+        // Group items based on fetched categories order
+        const grouped = groupItemsByOrderedCategories(itemsToUse, categoriesData);
         setCategories(grouped);
       } catch (error) {
         console.error('Erro ao carregar portfólio:', error);
-        setCategories(groupItemsByCategory(fallbackItems));
+        setCategories(groupItemsByCategoryLegacy(fallbackItems));
       } finally {
         setLoading(false);
       }
@@ -94,20 +106,59 @@ export function Portfolio({ settings }: PortfolioProps) {
 
   const instagramUrl = settings?.instagramUrl || 'https://instagram.com/juniorlima.hairartist';
 
-  // Helper to group items
-  const groupItemsByCategory = (items: PortfolioItem[]): CategoryGroup[] => {
-    const groups: Record<string, PortfolioItem[]> = {};
+  // Helper to group items respecting backend category order
+  const groupItemsByOrderedCategories = (
+    items: PortfolioItem[],
+    orderedCategories: any[]
+  ): CategoryGroup[] => {
+    const groups: CategoryGroup[] = [];
+    const groupedMap: Record<string, PortfolioItem[]> = {};
 
+    // 1. Group items by their category name (normalization)
+    items.forEach(item => {
+      // Use categoryId relation name if available, fallback to string field
+      // For now we assume string match is enough as migration synced them
+      const catName = item.category || 'Geral';
+      if (!groupedMap[catName]) groupedMap[catName] = [];
+      groupedMap[catName].push(item);
+    });
+
+    // 2. Iterate ordered categories creating groups
+    orderedCategories.forEach(cat => {
+      if (groupedMap[cat.name] && groupedMap[cat.name].length > 0) {
+        groups.push({
+          name: cat.name,
+          coverImage: cat.coverImageUrl || groupedMap[cat.name][0].imageUrl, // Prioritize custom cover
+          items: groupedMap[cat.name],
+        });
+        delete groupedMap[cat.name]; // Mark as consumed
+      }
+    });
+
+    // 3. Add remaining items as "Outros" or append
+    Object.keys(groupedMap).forEach(catName => {
+      groups.push({
+        name: catName,
+        coverImage: groupedMap[catName][0].imageUrl,
+        items: groupedMap[catName],
+      });
+    });
+
+    return groups;
+  };
+
+  // Legacy fallback grouping
+  const groupItemsByCategoryLegacy = (items: PortfolioItem[]): CategoryGroup[] => {
+    const groups: Record<string, PortfolioItem[]> = {};
     items.forEach(item => {
       const cat = item.category || 'Geral';
       if (!groups[cat]) groups[cat] = [];
       groups[cat].push(item);
     });
-
-    return Object.entries(groups).map(([name, items]) => ({
+    return Object.entries(groups).map(([name, catItems]) => ({
       name,
-      coverImage: items[0].imageUrl, // First image as cover
-      items,
+      coverImage: catItems[0].imageUrl,
+      items: catItems,
     }));
   };
 

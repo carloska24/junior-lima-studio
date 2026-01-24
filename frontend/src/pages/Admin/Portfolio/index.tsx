@@ -24,38 +24,42 @@ import type { PortfolioItem } from '@/types/studio';
 
 const Portfolio = () => {
   const [items, setItems] = useState<PortfolioItem[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState<string>('');
-
-  // Computar categorias únicas baseadas nos itens existentes
-  const uniqueCategories = Array.from(new Set(items.map(i => i.category))).sort();
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<PortfolioItem | undefined>(undefined);
   const [isSaving, setIsSaving] = useState(false);
 
-  const fetchItems = async () => {
+  const fetchData = async () => {
     try {
-      const response = await apiFetch('/portfolio/admin');
-      if (!response.ok) {
-        console.error('Erro ao buscar portfólio: Status', response.status);
-        setItems([]);
-        return;
+      const [itemsResponse, categoriesResponse] = await Promise.all([
+        apiFetch('/portfolio/admin'),
+        apiFetch('/categories/admin'),
+      ]);
+
+      if (itemsResponse.ok) {
+        const data = await itemsResponse.json();
+        setItems(Array.isArray(data) ? data : []);
       }
-      const data = await response.json();
-      setItems(Array.isArray(data) ? data : []);
+
+      if (categoriesResponse.ok) {
+        const cats = await categoriesResponse.json();
+        // Extract names from category objects
+        setCategories(cats.map((c: any) => c.name));
+      }
     } catch (error) {
-      console.error('Erro ao buscar portfólio:', error);
-      setItems([]);
+      console.error('Erro ao buscar dados:', error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchItems();
+    fetchData();
   }, []);
 
   const handleSave = async (data: Partial<PortfolioItem>) => {
@@ -77,7 +81,7 @@ const Portfolio = () => {
 
       if (!response.ok) throw new Error('Erro ao salvar');
 
-      await fetchItems();
+      await fetchData();
       setIsModalOpen(false);
       setEditingItem(undefined);
     } catch (error) {
@@ -95,7 +99,7 @@ const Portfolio = () => {
       await apiFetch(`/portfolio/${id}`, {
         method: 'DELETE',
       });
-      await fetchItems();
+      await fetchData();
     } catch (error) {
       console.error(error);
       alert('Erro ao excluir item.');
@@ -108,7 +112,7 @@ const Portfolio = () => {
         method: 'PUT',
         body: JSON.stringify({ active: !item.active }),
       });
-      await fetchItems();
+      await fetchData();
     } catch (error) {
       console.error(error);
       alert('Erro ao atualizar status.');
@@ -165,7 +169,7 @@ const Portfolio = () => {
           className="px-4 py-2 rounded-lg border border-gray-200 focus:border-gold-500 focus:ring-1 focus:ring-gold-500 outline-none text-gray-700"
         >
           <option value="">Todas as categorias</option>
-          {uniqueCategories.map(cat => (
+          {categories.map(cat => (
             <option key={cat} value={cat}>
               {cat}
             </option>
@@ -310,7 +314,7 @@ const Portfolio = () => {
                 }
               : undefined
           }
-          existingCategories={uniqueCategories} // Passar categorias existentes
+          existingCategories={categories} // Passar categorias existentes do banco
           onSubmit={handleSave}
           onCancel={() => setIsModalOpen(false)}
           isLoading={isSaving}

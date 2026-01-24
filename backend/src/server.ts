@@ -9,6 +9,7 @@ import { appointmentRoutes } from './routes/appointment.routes';
 import { dashboardRoutes } from './routes/dashboard.routes';
 import { studioRoutes } from './routes/studio.routes';
 import { portfolioRoutes } from './routes/portfolio.routes';
+import { categoryRoutes } from './routes/category.routes';
 
 const app = express();
 const PORT = process.env.PORT || 3333;
@@ -47,6 +48,7 @@ app.use('/appointments', appointmentRoutes);
 app.use('/dashboard', dashboardRoutes);
 app.use('/studio', studioRoutes);
 app.use('/portfolio', portfolioRoutes);
+app.use('/categories', categoryRoutes);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date() });

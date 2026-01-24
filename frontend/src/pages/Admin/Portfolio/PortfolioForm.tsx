@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Loader2, Image as ImageIcon, Video } from 'lucide-react';
+import { CreatableSelect } from '@/components/ui/CreatableSelect';
 
 interface PortfolioFormData {
   title: string;
@@ -92,21 +93,18 @@ export function PortfolioForm({
         {errors.title && <span className="text-xs text-red-500">{errors.title.message}</span>}
       </div>
 
-      {/* Categoria Dinâmica (Input com Datalist) */}
+      {/* Categoria Dinâmica (Creatable Select) */}
       <div>
-        <label className="block text-sm font-medium text-gray-700">Categoria *</label>
-        <input
-          list="categories-list"
-          {...register('category', { required: 'Categoria é obrigatória' })}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-gold-500 focus:ring-gold-500 sm:text-sm p-2 border text-midnight-900"
+        <label className="block text-sm font-medium text-gray-700 mb-1">Categoria *</label>
+        <CreatableSelect
+          options={suggestionCategories.map(c => ({ value: c, label: c }))}
+          value={watch('category')}
+          onChange={value => setValue('category', value, { shouldValidate: true })}
           placeholder="Selecione ou digite uma nova..."
         />
-        <datalist id="categories-list">
-          {suggestionCategories.map(cat => (
-            <option key={cat} value={cat} />
-          ))}
-        </datalist>
-        {errors.category && <span className="text-xs text-red-500">{errors.category.message}</span>}
+        {errors.category && (
+          <span className="text-xs text-red-500 mt-1">{errors.category.message}</span>
+        )}
         <p className="mt-1 text-xs text-gray-500">
           Você pode digitar uma nova categoria livremente ou escolher da lista.
         </p>

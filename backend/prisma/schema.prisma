@@ -56,18 +56,38 @@ enum MediaType {
 model PortfolioItem {
   id          String    @id @default(uuid())
   title       String
-  category    String    // Corte, Barba, Coloração, Tratamento, Visagismo
+  
+  // Legacy String Category (Manteve-se para compatibilidade temporária)
+  category    String    
+
+  // New Relation
+  categoryId  String?
+  categoryRef Category? @relation(fields: [categoryId], references: [id])
+
   imageUrl    String
   videoUrl    String?   // URL do vídeo (opcional)
   type        MediaType @default(IMAGE)
   duration    Int?      @default(5000) // Duração (5000ms padrão ou duração do vídeo)
   description String?
-  order       Int       @default(0) // Ordem de exibição
+  order       Int       @default(0) // Ordem de exibição do ITEM dentro da categoria
   active      Boolean   @default(true)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
   @@map("portfolio_items")
+}
+
+model Category {
+  id        String          @id @default(uuid())
+  name      String          @unique
+  order     Int             @default(0)
+  coverImageUrl String?     // Capa personalizada da categoria
+  items     PortfolioItem[]
+  active    Boolean         @default(true)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  @@map("categories")
 }
 
 

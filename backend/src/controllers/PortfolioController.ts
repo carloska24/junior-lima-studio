@@ -37,10 +37,26 @@ export class PortfolioController {
     }
 
     try {
+      // Find or Create Category
+      let categoryId = null;
+      const existingCategory = await prisma.category.findFirst({
+        where: { name: { equals: category, mode: 'insensitive' } },
+      });
+
+      if (existingCategory) {
+        categoryId = existingCategory.id;
+      } else {
+        const newCategory = await prisma.category.create({
+          data: { name: category, order: 99 },
+        });
+        categoryId = newCategory.id;
+      }
+
       const item = await prisma.portfolioItem.create({
         data: {
           title,
-          category,
+          category, // Legacy
+          categoryId, // Relation
           imageUrl,
           videoUrl,
           type,
@@ -63,11 +79,30 @@ export class PortfolioController {
       req.body;
 
     try {
+      let categoryId = undefined;
+
+      // Update category relation if category name changes
+      if (category) {
+        const existingCategory = await prisma.category.findFirst({
+          where: { name: { equals: category, mode: 'insensitive' } },
+        });
+
+        if (existingCategory) {
+          categoryId = existingCategory.id;
+        } else {
+          const newCategory = await prisma.category.create({
+            data: { name: category, order: 99 },
+          });
+          categoryId = newCategory.id;
+        }
+      }
+
       const item = await prisma.portfolioItem.update({
         where: { id: String(id) },
         data: {
           title,
           category,
+          categoryId,
           imageUrl,
           videoUrl,
           type,
