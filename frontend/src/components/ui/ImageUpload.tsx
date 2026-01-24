@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Camera, Image as ImageIcon, Trash2, Edit2 } from 'lucide-react';
-import { apiFetch } from '@/services/api';
+import { Camera, Image as ImageIcon, Trash2 } from 'lucide-react';
 
 interface ImageUploadProps {
   defaultImage?: string;
