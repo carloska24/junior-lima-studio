@@ -30,7 +30,7 @@ export class PortfolioController {
   }
 
   async create(req: Request, res: Response) {
-    const { title, category, imageUrl, description, order } = req.body;
+    const { title, category, imageUrl, videoUrl, type, duration, description, order } = req.body;
 
     if (!title || !category || !imageUrl) {
       return res.status(400).json({ error: 'Título, categoria e URL da imagem são obrigatórios' });
@@ -42,6 +42,9 @@ export class PortfolioController {
           title,
           category,
           imageUrl,
+          videoUrl,
+          type,
+          duration,
           description,
           order: order || 0,
         },
@@ -56,7 +59,8 @@ export class PortfolioController {
 
   async update(req: Request, res: Response) {
     const { id } = req.params;
-    const { title, category, imageUrl, description, order, active } = req.body;
+    const { title, category, imageUrl, videoUrl, type, duration, description, order, active } =
+      req.body;
 
     try {
       const item = await prisma.portfolioItem.update({
@@ -65,6 +69,9 @@ export class PortfolioController {
           title,
           category,
           imageUrl,
+          videoUrl,
+          type,
+          duration,
           description,
           order,
           active,

@@ -47,17 +47,25 @@ model Service {
   @@map("services")
 }
 
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
 // Portfólio de trabalhos para exibição na landing page
 model PortfolioItem {
-  id          String   @id @default(uuid())
+  id          String    @id @default(uuid())
   title       String
-  category    String   // Corte, Barba, Coloração, Tratamento, Visagismo
+  category    String    // Corte, Barba, Coloração, Tratamento, Visagismo
   imageUrl    String
+  videoUrl    String?   // URL do vídeo (opcional)
+  type        MediaType @default(IMAGE)
+  duration    Int?      @default(5000) // Duração (5000ms padrão ou duração do vídeo)
   description String?
-  order       Int      @default(0) // Ordem de exibição
-  active      Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  order       Int       @default(0) // Ordem de exibição
+  active      Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   @@map("portfolio_items")
 }

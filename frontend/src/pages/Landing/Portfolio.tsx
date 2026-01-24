@@ -171,6 +171,7 @@ export function Portfolio({ settings }: PortfolioProps) {
       <AnimatePresence>
         {activeCategoryIndex !== null && categories[activeCategoryIndex] && (
           <StoryViewer
+            key={`story-viewer-${activeCategoryIndex}`}
             stories={categories[activeCategoryIndex].items}
             onClose={() => setActiveCategoryIndex(null)}
             onNextCategory={() => {

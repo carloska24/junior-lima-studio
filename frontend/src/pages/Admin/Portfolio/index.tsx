@@ -20,23 +20,16 @@ import {
 } from '@/components/ui/Table';
 import { PortfolioForm } from './PortfolioForm';
 
-interface PortfolioItem {
-  id: string;
-  title: string;
-  category: string;
-  imageUrl: string;
-  description: string | null;
-  order: number;
-  active: boolean;
-}
+import type { PortfolioItem } from '@/types/studio';
 
-const categories = ['Corte', 'Barba', 'Coloração', 'Tratamento', 'Visagismo'];
-
-export function Portfolio() {
+const Portfolio = () => {
   const [items, setItems] = useState<PortfolioItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState<string>('');
+
+  // Computar categorias únicas baseadas nos itens existentes
+  const uniqueCategories = Array.from(new Set(items.map(i => i.category))).sort();
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -52,7 +45,6 @@ export function Portfolio() {
         return;
       }
       const data = await response.json();
-      // Garante que data seja um array
       setItems(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Erro ao buscar portfólio:', error);
@@ -72,9 +64,15 @@ export function Portfolio() {
       const url = editingItem ? `/portfolio/${editingItem.id}` : '/portfolio';
       const method = editingItem ? 'PUT' : 'POST';
 
+      // Inferência de tipo básica no frontend (o backend pode validar melhor)
+      const payload = {
+        ...data,
+        type: data.videoUrl && data.videoUrl.trim() !== '' ? 'VIDEO' : 'IMAGE',
+      };
+
       const response = await apiFetch(url, {
         method,
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) throw new Error('Erro ao salvar');
@@ -138,7 +136,7 @@ export function Portfolio() {
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-serif text-midnight-900">Portfólio</h1>
-          <p className="text-gray-500">Gerencie as fotos exibidas na landing page.</p>
+          <p className="text-gray-500">Gerencie as fotos e vídeos exibidos na landing page.</p>
         </div>
         <button
           onClick={openNewModal}
@@ -167,7 +165,7 @@ export function Portfolio() {
           className="px-4 py-2 rounded-lg border border-gray-200 focus:border-gold-500 focus:ring-1 focus:ring-gold-500 outline-none text-gray-700"
         >
           <option value="">Todas as categorias</option>
-          {categories.map(cat => (
+          {uniqueCategories.map(cat => (
             <option key={cat} value={cat}>
               {cat}
             </option>
@@ -184,9 +182,10 @@ export function Portfolio() {
           <TableHeader>
             <TableRow>
               <TableHead className="w-[60px]">Ordem</TableHead>
-              <TableHead className="w-[80px]">Imagem</TableHead>
+              <TableHead className="w-[80px]">Mídia</TableHead>
               <TableHead>Título</TableHead>
               <TableHead>Categoria</TableHead>
+              <TableHead>Tipo</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="w-[100px]">Ações</TableHead>
             </TableRow>
@@ -199,19 +198,39 @@ export function Portfolio() {
                   {item.order}
                 </TableCell>
                 <TableCell>
-                  {item.imageUrl ? (
-                    <div className="w-12 h-12 rounded overflow-hidden bg-gray-100">
+                  {item.type === 'VIDEO' && item.videoUrl ? (
+                    <div className="w-12 h-12 rounded overflow-hidden bg-black relative group border">
+                      <video
+                        src={item.videoUrl}
+                        className="w-full h-full object-cover"
+                        muted
+                        loop
+                        onMouseOver={e => (e.target as HTMLVideoElement).play()}
+                        onMouseOut={e => {
+                          (e.target as HTMLVideoElement).pause();
+                          (e.target as HTMLVideoElement).currentTime = 0;
+                        }}
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <div className="w-4 h-4 rounded-full border border-white flex items-center justify-center bg-black/50">
+                          <span className="text-[6px] ml-0.5 text-white">▶</span>
+                        </div>
+                      </div>
+                    </div>
+                  ) : item.imageUrl ? (
+                    <div className="w-12 h-12 rounded overflow-hidden bg-gray-100 relative group border">
                       <img
                         src={item.imageUrl}
                         alt={item.title}
                         className="w-full h-full object-cover"
                         onError={e => {
-                          (e.target as HTMLImageElement).src = '';
-                          (e.target as HTMLImageElement).parentElement?.classList.add(
-                            'flex',
-                            'items-center',
-                            'justify-center'
-                          );
+                          const parent = (e.target as HTMLElement).parentElement;
+                          if (parent) {
+                            parent.className =
+                              'w-12 h-12 rounded bg-gray-200 flex items-center justify-center';
+                            (e.target as HTMLImageElement).style.display = 'none';
+                            parent.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>`;
+                          }
                         }}
                       />
                     </div>
@@ -225,6 +244,11 @@ export function Portfolio() {
                 <TableCell>
                   <span className="px-2 py-1 text-xs rounded-full bg-gold-100 text-gold-700">
                     {item.category}
+                  </span>
+                </TableCell>
+                <TableCell>
+                  <span className="text-xs text-gray-500 font-mono uppercase">
+                    {item.type || 'IMAGE'}
                   </span>
                 </TableCell>
                 <TableCell>
@@ -261,7 +285,7 @@ export function Portfolio() {
             ))}
             {filteredItems.length === 0 && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+                <TableCell colSpan={7} className="text-center py-8 text-gray-500">
                   Nenhum item encontrado.
                 </TableCell>
               </TableRow>
@@ -282,9 +306,11 @@ export function Portfolio() {
                   ...editingItem,
                   description: editingItem.description || undefined,
                   imageUrl: editingItem.imageUrl,
+                  videoUrl: editingItem.videoUrl, // Passar videoUrl
                 }
               : undefined
           }
+          existingCategories={uniqueCategories} // Passar categorias existentes
           onSubmit={handleSave}
           onCancel={() => setIsModalOpen(false)}
           isLoading={isSaving}
@@ -292,4 +318,6 @@ export function Portfolio() {
       </Modal>
     </div>
   );
-}
+};
+
+export { Portfolio };

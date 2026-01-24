@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
+import { X, Volume2, VolumeX } from 'lucide-react';
 import type { PortfolioItem } from '@/types/studio';
 
 interface StoryViewerProps {
@@ -20,14 +20,19 @@ export function StoryViewer({
 }: StoryViewerProps) {
   const [currentIndex, setCurrentIndex] = useState(initialStoryIndex);
   const [isPaused, setIsPaused] = useState(false);
+  const [isMuted, setIsMuted] = useState(true); // Default muted for autoplay
   const [progress, setProgress] = useState(0);
+  const [isVideoLoading, setIsVideoLoading] = useState(false);
 
-  const STORY_DURATION = 5000;
+  const videoRef = useRef<HTMLVideoElement>(null);
   const progressInterval = useRef<number | null>(null);
   const startTime = useRef<number>(0);
   const pausedAt = useRef<number>(0);
 
-  // Memoized handlers to prevent dependency cycles
+  const currentStory = stories[currentIndex];
+  const isVideo = currentStory.type === 'VIDEO';
+  const STORY_DURATION = currentStory.duration || 5000;
+
   const handleNext = useCallback(() => {
     if (currentIndex < stories.length - 1) {
       setCurrentIndex(prev => prev + 1);
@@ -46,29 +51,39 @@ export function StoryViewer({
     }
   }, [currentIndex, onPrevCategory]);
 
-  const handlePause = useCallback(() => {
-    setIsPaused(true);
-    pausedAt.current = Date.now();
+  const handleTogglePause = useCallback(() => {
+    setIsPaused(prev => {
+      const nextState = !prev;
+      if (videoRef.current) {
+        if (nextState) videoRef.current.pause();
+        else videoRef.current.play();
+      }
+      if (nextState) pausedAt.current = Date.now();
+      else {
+        const now = Date.now();
+        startTime.current += now - pausedAt.current;
+      }
+      return nextState;
+    });
   }, []);
 
-  const handleResume = useCallback(() => {
-    const now = Date.now();
-    const pauseDuration = now - pausedAt.current;
-    startTime.current += pauseDuration;
-    setIsPaused(false);
-  }, []);
+  const toggleMute = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsMuted(prev => !prev);
+  };
 
-  // Reinicia story e timers quando muda o índice
+  // Reset state on index change
   useEffect(() => {
     setProgress(0);
+    setIsPaused(false);
+    setIsVideoLoading(isVideo);
     startTime.current = Date.now();
     pausedAt.current = 0;
-    setIsPaused(false);
-  }, [currentIndex]);
+  }, [currentIndex, isVideo]);
 
-  // Timer de progresso
+  // Image Timer Logic
   useEffect(() => {
-    if (isPaused) {
+    if (isVideo || isPaused) {
       if (progressInterval.current) cancelAnimationFrame(progressInterval.current);
       return;
     }
@@ -92,7 +107,21 @@ export function StoryViewer({
     return () => {
       if (progressInterval.current) cancelAnimationFrame(progressInterval.current);
     };
-  }, [currentIndex, isPaused, handleNext]);
+  }, [currentIndex, isPaused, isVideo, STORY_DURATION, handleNext]);
+
+  // Video Events
+  const handleVideoTimeUpdate = () => {
+    if (videoRef.current && !isPaused) {
+      const { currentTime, duration } = videoRef.current;
+      if (duration > 0) {
+        setProgress((currentTime / duration) * 100);
+      }
+    }
+  };
+
+  const handleVideoEnded = () => {
+    handleNext();
+  };
 
   return (
     <div className="fixed inset-0 z-50 bg-black flex items-center justify-center">
@@ -100,7 +129,7 @@ export function StoryViewer({
       <div
         className="absolute inset-0 opacity-30 blur-3xl scale-110"
         style={{
-          backgroundImage: `url(${stories[currentIndex].imageUrl})`,
+          backgroundImage: `url(${currentStory.imageUrl})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
@@ -132,38 +161,78 @@ export function StoryViewer({
                 <span className="font-serif text-gold-400 text-xs font-bold">JL</span>
               </div>
               <span className="text-white text-sm font-medium drop-shadow-md">
-                {stories[currentIndex].category}
+                {currentStory.category}
               </span>
               <span className="text-white/60 text-xs">• {idxToTimeAgo(currentIndex)}</span>
             </div>
 
-            <button
-              onClick={onClose}
-              className="p-2 text-white hover:text-gold-400 transition-colors"
-            >
-              <X size={24} />
-            </button>
+            <div className="flex items-center gap-2">
+              {/* Mute Button (Shown only for video) */}
+              {isVideo && (
+                <button
+                  onClick={toggleMute}
+                  className="p-2 text-white hover:text-gold-400 transition-colors"
+                >
+                  {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+                </button>
+              )}
+              <button
+                onClick={onClose}
+                className="p-2 text-white hover:text-gold-400 transition-colors"
+              >
+                <X size={24} />
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Main Content Area (Image) */}
+        {/* Main Content Area */}
         <div
-          className="flex-1 relative cursor-pointer"
-          onPointerDown={handlePause}
-          onPointerUp={handleResume}
-          onPointerLeave={handleResume}
+          className="flex-1 relative cursor-pointer bg-black"
+          onPointerDown={handleTogglePause}
+          onPointerUp={handleTogglePause}
+          onPointerLeave={() => isPaused && handleTogglePause()} // Resume on leave if paused via hold
         >
           <AnimatePresence mode="wait">
-            <motion.img
-              key={stories[currentIndex].id}
-              src={stories[currentIndex].imageUrl}
-              alt={stories[currentIndex].title}
-              className="absolute inset-0 w-full h-full object-cover"
-              initial={{ opacity: 0.8, scale: 1.05 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0.8 }}
-              transition={{ duration: 0.3 }}
-            />
+            {isVideo && currentStory.videoUrl ? (
+              <motion.div
+                key={`video-${currentStory.id}`}
+                className="absolute inset-0 w-full h-full flex items-center justify-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                {isVideoLoading && (
+                  <div className="absolute inset-0 flex items-center justify-center z-10">
+                    <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  </div>
+                )}
+                <video
+                  ref={videoRef}
+                  src={currentStory.videoUrl}
+                  poster={currentStory.imageUrl}
+                  className="w-full h-full object-contain"
+                  autoPlay
+                  playsInline
+                  muted={isMuted} // Controlled mute state
+                  onTimeUpdate={handleVideoTimeUpdate}
+                  onEnded={handleVideoEnded}
+                  onWaiting={() => setIsVideoLoading(true)}
+                  onCanPlay={() => setIsVideoLoading(false)}
+                />
+              </motion.div>
+            ) : (
+              <motion.img
+                key={`img-${currentStory.id}`}
+                src={currentStory.imageUrl}
+                alt={currentStory.title}
+                className="absolute inset-0 w-full h-full object-cover"
+                initial={{ opacity: 0.8, scale: 1.05 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0.8 }}
+                transition={{ duration: 0.3 }}
+              />
+            )}
           </AnimatePresence>
 
           {/* Gradient Overlay Bottom */}
@@ -172,17 +241,17 @@ export function StoryViewer({
           {/* Caption / Title */}
           <div className="absolute bottom-0 inset-x-0 p-8 pb-12 z-10">
             <motion.div
-              key={`text-${stories[currentIndex].id}`}
+              key={`text-${currentStory.id}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
             >
               <h3 className="text-2xl font-serif text-white mb-2 shadow-black drop-shadow-lg">
-                {stories[currentIndex].title}
+                {currentStory.title}
               </h3>
-              {stories[currentIndex].description && (
+              {currentStory.description && (
                 <p className="text-offwhite-200 text-sm line-clamp-2 drop-shadow-md">
-                  {stories[currentIndex].description}
+                  {currentStory.description}
                 </p>
               )}
             </motion.div>

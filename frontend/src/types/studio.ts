@@ -15,6 +15,9 @@ export interface PortfolioItem {
   title: string;
   category: string;
   imageUrl: string;
+  videoUrl?: string;
+  type?: 'IMAGE' | 'VIDEO';
+  duration?: number;
   description?: string;
   order?: number;
   active?: boolean;
