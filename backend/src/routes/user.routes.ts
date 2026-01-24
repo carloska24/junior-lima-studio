@@ -29,5 +29,3 @@ userRoutes.put('/me/password', authMiddleware, userController.updatePassword);
 userRoutes.put('/:id/active', authMiddleware, userController.toggleActive);
 userRoutes.post('/', authMiddleware, userController.create);
 userRoutes.get('/', authMiddleware, userController.list);
-
-export { userRoutes };
