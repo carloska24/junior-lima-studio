@@ -1,13 +1,6 @@
 import { Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
 
-interface UpdateReqBody {
-  name?: string;
-  order?: number;
-  active?: boolean;
-  coverImageUrl?: string;
-}
-
 export class CategoryController {
   // Public - List ordered active categories
   async index(req: Request, res: Response) {
@@ -37,7 +30,7 @@ export class CategoryController {
   }
 
   async create(req: Request, res: Response) {
-    const { name, order, coverImageUrl } = req.body;
+    const { name, order, coverImageUrl } = req.body as any;
 
     if (!name) return res.status(400).json({ error: 'Nome obrigatório' });
 
@@ -58,18 +51,17 @@ export class CategoryController {
 
   async update(req: Request, res: Response) {
     const { id } = req.params;
-    // Separate destructuring to avoid implicit any issues
-    const props = req.body;
+    const { name, order, active, coverImageUrl } = req.body as any;
 
     try {
       const category = await prisma.category.update({
         where: { id },
         data: {
-          name: props.name ? String(props.name) : undefined,
-          order: props.order !== undefined ? Number(props.order) : undefined,
-          active: props.active !== undefined ? Boolean(props.active) : undefined,
+          name: typeof name === 'string' ? name : undefined,
+          order: order !== undefined ? Number(order) : undefined,
+          active: active !== undefined ? Boolean(active) : undefined,
           // Explicitly handle null for database
-          coverImageUrl: typeof props.coverImageUrl === 'string' ? props.coverImageUrl : null,
+          coverImageUrl: typeof coverImageUrl === 'string' ? coverImageUrl : null,
         },
       });
       return res.json(category);
