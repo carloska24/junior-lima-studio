@@ -123,6 +123,34 @@ Domingo: Fechado`,
     });
     console.log('Portfolio seeded');
   }
+
+  // Backfill Categories from PortfolioItems
+  // This ensures legacy data generates proper Category entities
+  const allItems = await prisma.portfolioItem.findMany({
+    select: { category: true },
+  });
+
+  const uniqueCategories = [...new Set(allItems.map(item => item.category).filter(Boolean))];
+
+  console.log(`Found ${uniqueCategories.length} unique categories to sync.`);
+
+  for (const catName of uniqueCategories) {
+    const exists = await prisma.category.findFirst({
+      where: { name: { equals: catName, mode: 'insensitive' } },
+    });
+
+    if (!exists) {
+      await prisma.category.create({
+        data: {
+          name: catName,
+          order: 99, // Default order for migrated items
+          active: true,
+        },
+      });
+      console.log(`Created category: ${catName}`);
+    }
+  }
+  console.log('Categories synced');
 }
 
 main()
