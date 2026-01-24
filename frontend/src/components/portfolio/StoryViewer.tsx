@@ -257,23 +257,72 @@ export function StoryViewer({
             </motion.div>
           </div>
 
-          {/* Navigation Touch Areas */}
-          <div className="absolute inset-0 flex z-0">
-            <div
-              className="w-1/3 h-full"
-              onClick={e => {
-                e.stopPropagation();
-                handlePrev();
-              }}
-            />
-            <div
-              className="w-2/3 h-full"
-              onClick={e => {
-                e.stopPropagation();
-                handleNext();
-              }}
-            />
-          </div>
+          {/* Unified Interaction Layer (Swipe, Tap, Hold) */}
+          <div
+            className="absolute inset-0 z-10"
+            onTouchStart={e => {
+              const clientX = e.touches[0].clientX;
+              const screenWidth = window.innerWidth;
+
+              // Logic for Hold-to-Pause
+              if (!isPaused) handleTogglePause(); // Pause on touch down
+
+              // Store start data for gesture detection
+              e.currentTarget.dataset.startX = String(clientX);
+              e.currentTarget.dataset.startTime = String(Date.now());
+            }}
+            onTouchEnd={e => {
+              const startX = Number(e.currentTarget.dataset.startX || 0);
+              const startTime = Number(e.currentTarget.dataset.startTime || 0);
+              const endX = e.changedTouches[0].clientX;
+              const endTime = Date.now();
+              const screenWidth = window.innerWidth;
+
+              // Resume on touch up
+              if (isPaused) handleTogglePause();
+
+              const deltaX = endX - startX;
+              const duration = endTime - startTime;
+              const isSwipe = Math.abs(deltaX) > 50; // Threshold for swipe
+              const isShortTap = duration < 250; // Threshold for tap vs hold
+
+              // 1. Handle Swipe
+              if (isSwipe) {
+                if (deltaX > 0)
+                  handlePrev(); // Swipe Right -> Prev
+                else handleNext(); // Swipe Left -> Next
+                return;
+              }
+
+              // 2. Handle Tap (Only if it wasn't a long hold/drag)
+              if (isShortTap) {
+                // Left 30% goes back, Right 70% goes forward
+                if (endX < screenWidth * 0.3) {
+                  handlePrev();
+                } else {
+                  handleNext();
+                }
+              }
+              // If it was a long hold (duration >= 250), we do nothing here (just resumed playback)
+            }}
+            // Mouse equivalents for desktop testing
+            onMouseDown={e => {
+              if (!isPaused) handleTogglePause();
+              e.currentTarget.dataset.startTime = String(Date.now());
+            }}
+            onMouseUp={e => {
+              if (isPaused) handleTogglePause();
+              const startTime = Number(e.currentTarget.dataset.startTime || 0);
+              if (Date.now() - startTime < 250) {
+                const width = e.currentTarget.clientWidth;
+                if (e.nativeEvent.offsetX < width * 0.3) handlePrev();
+                else handleNext();
+              }
+            }}
+            onMouseLeave={() => {
+              if (isPaused) handleTogglePause();
+            }}
+          />
         </div>
       </div>
     </div>
