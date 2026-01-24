@@ -2,10 +2,17 @@
 
 @theme {
   /* Luxury Palette */
+  --color-gold-50: #fbf8f0;
+  --color-gold-100: #f5f0db;
+  --color-gold-200: #ede0b8;
   --color-gold-300: #e5cd90;
   --color-gold-400: #d4af37;
   --color-gold-500: #c5a028;
   --color-gold-600: #a08020;
+  --color-gold-700: #806015;
+  --color-gold-800: #664d14;
+  --color-gold-900: #544012;
+  --color-gold-950: #2e2107;
 
   --color-midnight-950: #050505;
   --color-midnight-900: #0a0a0a;
@@ -66,7 +73,7 @@
     @apply opacity-0 transition-opacity duration-500 hover:opacity-100;
   }
 
-  /* Custom Scrollbar for Luxury Feel */
+  /* Custom Scrollbar for Luxury Feel - Global Dark */
   ::-webkit-scrollbar {
     width: 6px;
   }
@@ -78,6 +85,17 @@
   }
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-gold-600;
+  }
+
+  /* Context-Aware Scrollbars */
+  .scrollbar-light::-webkit-scrollbar-track {
+    @apply bg-offwhite-100;
+  }
+  .scrollbar-light::-webkit-scrollbar-thumb {
+    @apply bg-gold-200;
+  }
+  .scrollbar-light::-webkit-scrollbar-thumb:hover {
+    @apply bg-gold-400;
   }
 
   /* Autofill Override */
