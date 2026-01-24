@@ -38,31 +38,31 @@ export class PortfolioController {
 
     try {
       // Find or Create Category
-      let categoryId = null;
+      let categoryId: string | null = null;
       const existingCategory = await prisma.category.findFirst({
-        where: { name: { equals: category, mode: 'insensitive' } },
+        where: { name: { equals: String(category), mode: 'insensitive' } },
       });
 
       if (existingCategory) {
         categoryId = existingCategory.id;
       } else {
         const newCategory = await prisma.category.create({
-          data: { name: category, order: 99 },
+          data: { name: String(category), order: 99 },
         });
         categoryId = newCategory.id;
       }
 
       const item = await prisma.portfolioItem.create({
         data: {
-          title,
-          category, // Legacy
+          title: String(title),
+          category: String(category), // Legacy
           categoryId, // Relation
-          imageUrl,
-          videoUrl,
-          type,
-          duration,
-          description,
-          order: order || 0,
+          imageUrl: String(imageUrl),
+          videoUrl: videoUrl ? String(videoUrl) : undefined,
+          type: type as any,
+          duration: duration ? Number(duration) : undefined,
+          description: description ? String(description) : undefined,
+          order: order ? Number(order) : 0,
         },
       });
 
@@ -79,19 +79,19 @@ export class PortfolioController {
       req.body;
 
     try {
-      let categoryId = undefined;
+      let categoryId: string | null | undefined = undefined;
 
       // Update category relation if category name changes
       if (category) {
         const existingCategory = await prisma.category.findFirst({
-          where: { name: { equals: category, mode: 'insensitive' } },
+          where: { name: { equals: String(category), mode: 'insensitive' } },
         });
 
         if (existingCategory) {
           categoryId = existingCategory.id;
         } else {
           const newCategory = await prisma.category.create({
-            data: { name: category, order: 99 },
+            data: { name: String(category), order: 99 },
           });
           categoryId = newCategory.id;
         }
@@ -100,16 +100,16 @@ export class PortfolioController {
       const item = await prisma.portfolioItem.update({
         where: { id: String(id) },
         data: {
-          title,
-          category,
+          title: title ? String(title) : undefined,
+          category: category ? String(category) : undefined,
           categoryId,
-          imageUrl,
-          videoUrl,
-          type,
-          duration,
-          description,
-          order,
-          active,
+          imageUrl: imageUrl ? String(imageUrl) : undefined,
+          videoUrl: videoUrl ? String(videoUrl) : null,
+          type: type as any,
+          duration: duration ? Number(duration) : null,
+          description: description ? String(description) : null,
+          order: order !== undefined ? Number(order) : undefined,
+          active: active !== undefined ? Boolean(active) : undefined,
         },
       });
 
