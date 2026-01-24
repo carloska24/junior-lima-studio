@@ -1,16 +1,33 @@
 import { Router } from 'express';
+import multer from 'multer';
+import uploadConfig from '../config/upload';
+
 import { UserController } from '../controllers/UserController';
+import { AuthController } from '../controllers/AuthController';
+import { UploadController } from '../controllers/UploadController';
+
 import { authMiddleware } from '../middleware/authMiddleware';
 
-const userRoutes = Router();
+const upload = multer(uploadConfig);
+
 const userController = new UserController();
+const authController = new AuthController();
+const uploadController = new UploadController();
 
-userRoutes.use(authMiddleware);
+export const userRoutes = Router();
 
-userRoutes.get('/me', userController.me);
-userRoutes.put('/me/password', userController.updatePassword);
-userRoutes.get('/', userController.list);
-userRoutes.post('/', userController.create);
-userRoutes.put('/:id/toggle-active', userController.toggleActive);
+// Auth
+userRoutes.post('/login', authController.login);
+
+// Uploads
+userRoutes.post('/uploads', authMiddleware, upload.single('image'), uploadController.store);
+
+// User Profile
+userRoutes.get('/me', authMiddleware, userController.me);
+userRoutes.put('/me/profile', authMiddleware, userController.updateProfile); // To be implemented
+userRoutes.put('/me/password', authMiddleware, userController.updatePassword);
+userRoutes.put('/:id/active', authMiddleware, userController.toggleActive);
+userRoutes.post('/', authMiddleware, userController.create);
+userRoutes.get('/', authMiddleware, userController.list);
 
 export { userRoutes };

@@ -5,8 +5,8 @@ import { prisma } from '../lib/prisma';
 export class UserController {
   async me(req: Request, res: Response) {
     const user = await prisma.user.findUnique({
-      where: { id: req.userId },
-      select: { id: true, name: true, email: true, active: true },
+      where: { id: String(req.userId) },
+      select: { id: true, name: true, email: true, avatarUrl: true, active: true },
     });
 
     if (!user) {
@@ -16,17 +16,46 @@ export class UserController {
     return res.json(user);
   }
 
-  async updatePassword(req: Request, res: Response) {
-    const { password } = req.body;
+  async updateProfile(req: Request, res: Response) {
+    // Workflow: Use any to Disable inference and manually sanitize
+    const { name, avatarUrl } = req.body as any;
 
-    if (!password || password.length < 6) {
+    await prisma.user.update({
+      where: { id: String(req.userId) },
+      data: {
+        name: name ? String(name) : undefined,
+        avatarUrl: typeof avatarUrl === 'string' ? avatarUrl : undefined,
+      },
+    });
+
+    return res.status(204).send();
+  }
+
+  async updatePassword(req: Request, res: Response) {
+    const { oldPassword, password } = req.body as any;
+
+    if (!password || String(password).length < 6) {
       return res.status(400).json({ error: 'Senha deve ter no mínimo 6 caracteres' });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 8);
+    if (!oldPassword) {
+      return res.status(400).json({ error: 'Senha atual é obrigatória' });
+    }
+
+    const user = await prisma.user.findUnique({ where: { id: String(req.userId) } });
+    if (!user) {
+      return res.status(404).json({ error: 'Usuário não encontrado' });
+    }
+
+    const checkPassword = await bcrypt.compare(String(oldPassword), user.password);
+    if (!checkPassword) {
+      return res.status(401).json({ error: 'Senha atual incorreta' });
+    }
+
+    const hashedPassword = await bcrypt.hash(String(password), 8);
 
     await prisma.user.update({
-      where: { id: req.userId },
+      where: { id: String(req.userId) },
       data: { password: hashedPassword },
     });
 
@@ -43,17 +72,21 @@ export class UserController {
   }
 
   async create(req: Request, res: Response) {
-    const { name, email, password } = req.body;
+    const { name, email, password } = req.body as any;
 
-    const userExists = await prisma.user.findUnique({ where: { email } });
+    const userExists = await prisma.user.findUnique({ where: { email: String(email) } });
     if (userExists) {
       return res.status(400).json({ error: 'Email já cadastrado' });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 8);
+    const hashedPassword = await bcrypt.hash(String(password), 8);
 
     const user = await prisma.user.create({
-      data: { name, email, password: hashedPassword },
+      data: {
+        name: String(name),
+        email: String(email),
+        password: hashedPassword,
+      },
       select: { id: true, name: true, email: true, active: true },
     });
 
@@ -61,19 +94,19 @@ export class UserController {
   }
 
   async toggleActive(req: Request, res: Response) {
-    const { id } = req.params as { id: string };
+    const { id } = req.params;
 
-    if (id === req.userId) {
+    if (String(id) === String(req.userId)) {
       return res.status(400).json({ error: 'Não é possível desativar o próprio usuário' });
     }
 
-    const user = await prisma.user.findUnique({ where: { id } });
+    const user = await prisma.user.findUnique({ where: { id: String(id) } });
     if (!user) {
       return res.status(404).json({ error: 'Usuário não encontrado' });
     }
 
     const updatedUser = await prisma.user.update({
-      where: { id },
+      where: { id: String(id) },
       data: { active: !user.active },
       select: { id: true, active: true },
     });

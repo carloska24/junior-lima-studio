@@ -122,7 +122,7 @@ export const WeeklyCalendar = forwardRef<WeeklyCalendarRef>((_props, ref) => {
       </div>
 
       {/* Calendar Grid */}
-      <div className="flex-1 overflow-auto flex flex-col">
+      <div className="flex-1 flex flex-col border-t border-gold-100/50">
         {/* Days Header */}
         <div className="grid grid-cols-[60px_1fr] sticky top-0 z-10 bg-white border-b border-gray-100">
           <div className="p-4 border-r border-gray-100"></div>
@@ -152,15 +152,17 @@ export const WeeklyCalendar = forwardRef<WeeklyCalendarRef>((_props, ref) => {
         </div>
 
         {/* Time Slots Area */}
-        <div className="flex-1 grid grid-cols-[60px_1fr]">
+        <div className="flex-1 grid grid-cols-[60px_1fr] overflow-auto scrollbar-light">
           {/* Time Indicators */}
-          <div className="border-r border-gray-100 bg-gray-50/50">
-            {timeSlots.map(hour => (
+          <div className="border-r border-gold-100 bg-offwhite-100/30 relative">
+            {/* Render labels absolutely to align perfectly with grid lines */}
+            {timeSlots.map((hour, index) => (
               <div
                 key={hour}
-                className="h-20 border-b border-gray-100 text-xs text-gray-400 text-center pt-2 relative"
+                className="absolute w-full text-right pr-2 text-sm font-serif text-gold-900 font-semibold transform translate-y-2"
+                style={{ top: `${index * 5}rem` }}
               >
-                <span className="-top-3 relative">{hour}:00</span>
+                {hour}:00
               </div>
             ))}
           </div>
@@ -171,7 +173,7 @@ export const WeeklyCalendar = forwardRef<WeeklyCalendarRef>((_props, ref) => {
             {timeSlots.map(hour => (
               <div
                 key={`guide-${hour}`}
-                className="absolute w-full border-b border-gray-50"
+                className="absolute w-full border-b border-gold-200/40"
                 style={{ top: `${(hour - startHour) * 5}rem`, height: '1px' }}
               />
             ))}
@@ -179,7 +181,7 @@ export const WeeklyCalendar = forwardRef<WeeklyCalendarRef>((_props, ref) => {
             {weekDays.map(day => (
               <div
                 key={day.toString()}
-                className="border-r border-gray-100 last:border-r-0 relative"
+                className="border-r border-gold-100/50 last:border-r-0 relative"
               >
                 {/* Render Appointments Logic is handled inside timeSlots map below */}
 
@@ -200,7 +202,7 @@ export const WeeklyCalendar = forwardRef<WeeklyCalendarRef>((_props, ref) => {
                       whileHover={{ backgroundColor: 'rgba(212, 175, 55, 0.05)' }}
                       onClick={() => !appointmentInSlot && handleSlotClick(day, hour)}
                       className={cn(
-                        'h-20 border-b border-gray-100 transition-colors cursor-pointer relative group',
+                        'h-20 transition-colors cursor-pointer relative group',
                         isSelected ? 'bg-gold-100/50' : '',
                         appointmentInSlot
                           ? 'bg-gold-100/20 cursor-default border-l-4 border-l-gold-500'
@@ -225,15 +227,15 @@ export const WeeklyCalendar = forwardRef<WeeklyCalendarRef>((_props, ref) => {
                   );
                 })}
 
-                {/* Current Time Indicator (Red Line) - Only if is Today */}
+                {/* Current Time Indicator (Gold Line) - Only if is Today */}
                 {isSameDay(day, new Date()) && (
                   <div
-                    className="absolute w-full border-t-2 border-red-400 z-10 pointer-events-none"
+                    className="absolute w-full border-t-2 border-gold-500 z-20 pointer-events-none"
                     style={{
                       top: `${(((new Date().getHours() - startHour) * 60 + new Date().getMinutes()) / 60) * 5}rem`,
                     }}
                   >
-                    <div className="w-2 h-2 rounded-full bg-red-400 -mt-[5px] -ml-[1px]" />
+                    <div className="w-2 h-2 rounded-full bg-gold-500 -mt-[5px] -ml-[1px] shadow-sm shadow-gold-900/20" />
                   </div>
                 )}
               </div>

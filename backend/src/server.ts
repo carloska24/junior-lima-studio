@@ -11,10 +11,11 @@ import { studioRoutes } from './routes/studio.routes';
 import { portfolioRoutes } from './routes/portfolio.routes';
 import { categoryRoutes } from './routes/category.routes';
 
+import uploadConfig from './config/upload';
+
 const app = express();
 const PORT = process.env.PORT || 3333;
 
-// Configuração de CORS mais segura
 const allowedOrigins = [
   'http://localhost:5173', // Dev frontend
   'http://localhost:3000',
@@ -28,7 +29,6 @@ app.use(express.json());
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Permite requests sem origin (mobile apps, Postman, etc)
       if (!origin) return callback(null, true);
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
@@ -38,6 +38,9 @@ app.use(
     credentials: true,
   })
 );
+
+// Serve static files
+app.use('/files', express.static(uploadConfig.directory));
 
 // Routes
 app.use('/auth', authRoutes);

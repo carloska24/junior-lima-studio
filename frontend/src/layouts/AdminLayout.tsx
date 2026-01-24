@@ -7,7 +7,6 @@ import {
   LogOut,
   Shield,
   User,
-  ChevronDown,
   Settings,
   Image,
   Tag,
@@ -75,45 +74,68 @@ export function AdminLayout() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top Header */}
-        <header className="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-8 shadow-sm">
-          <h2 className="text-gray-500 text-sm font-medium">Área Administrativa</h2>
-          <div className="relative">
+        <header className="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-8 shadow-sm z-20 sticky top-0">
+          <div>
+            <h2 className="text-lg font-serif text-gray-400 font-normal">Área Administrativa</h2>
+          </div>
+
+          <div className="relative flex items-center gap-4">
+            <div className="text-right hidden md:block">
+              <span className="block text-sm font-medium text-midnight-900 leading-tight">
+                {user?.name || 'Júnior Lima'}
+              </span>
+            </div>
+
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="flex items-center gap-4 hover:bg-gray-50 p-2 rounded-md transition-colors"
+              className="group relative focus:outline-none transition-transform active:scale-95 rounded-full"
             >
-              <div className="w-8 h-8 rounded-full bg-gold-100 border border-gold-200 flex items-center justify-center text-gold-700 font-serif font-bold text-xs">
-                {user?.name?.charAt(0) || 'JL'}
+              <div className="relative">
+                {user?.avatarUrl ? (
+                  <img
+                    src={user.avatarUrl}
+                    alt={user.name}
+                    className="w-12 h-12 rounded-full object-cover border border-gray-100 shadow-sm group-hover:shadow-md transition-all duration-200"
+                  />
+                ) : (
+                  <div className="w-12 h-12 rounded-full bg-[#FAFAFA] border border-[#F0F0F0] flex items-center justify-center group-hover:border-[#BFA15F]/30 transition-colors">
+                    <span className="font-serif font-bold text-xl text-[#BFA15F]">JL</span>
+                  </div>
+                )}
               </div>
-              <div className="text-left hidden md:block">
-                <span className="block text-sm font-medium text-midnight-900 leading-none">
-                  {user?.name || 'Administrador'}
-                </span>
-                <span className="text-xs text-gray-500">Gestor</span>
-              </div>
-              <ChevronDown size={14} className="text-gray-400" />
             </button>
 
             {/* Dropdown Menu */}
             {isDropdownOpen && (
               <>
                 <div className="fixed inset-0 z-10" onClick={() => setIsDropdownOpen(false)} />
-                <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-100 py-1 z-20">
+                <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-100 py-1 z-30 animate-in fade-in slide-in-from-top-1 origin-top-right">
+                  <div className="px-4 py-3 border-b border-gray-50 mb-1">
+                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                      Conta
+                    </p>
+                    <p className="text-sm font-medium text-midnight-900 truncate mt-0.5">
+                      {user?.email}
+                    </p>
+                  </div>
+
                   <NavLink
                     to="/admin/profile"
                     onClick={() => setIsDropdownOpen(false)}
-                    className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-midnight-900"
+                    className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-midnight-900 transition-colors"
                   >
                     <User size={16} />
-                    Meu Perfil
+                    <span>Meu Perfil</span>
                   </NavLink>
-                  <div className="h-px bg-gray-100 my-1" />
+
+                  <div className="h-px bg-gray-50 my-1" />
+
                   <button
                     onClick={signOut}
-                    className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 text-left"
+                    className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 text-left transition-colors"
                   >
                     <LogOut size={16} />
-                    Sair
+                    <span>Sair</span>
                   </button>
                 </div>
               </>

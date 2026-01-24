@@ -5,12 +5,14 @@ interface User {
   id: string;
   name: string;
   email: string;
+  avatarUrl?: string | null;
 }
 
 interface AuthContextType {
   user: User | null;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => void;
+  updateUser: (data: Partial<User>) => void;
   isAuthenticated: boolean;
   loading: boolean;
 }
@@ -57,8 +59,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem('@JuniorLima:token');
   };
 
+  const updateUser = (data: Partial<User>) => {
+    if (user) {
+      const updatedUser = { ...user, ...data };
+      setUser(updatedUser);
+      localStorage.setItem('@JuniorLima:user', JSON.stringify(updatedUser));
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, signIn, signOut, isAuthenticated: !!user, loading }}>
+    <AuthContext.Provider
+      value={{ user, signIn, signOut, updateUser, isAuthenticated: !!user, loading }}
+    >
       {children}
     </AuthContext.Provider>
   );
