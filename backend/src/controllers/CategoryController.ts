@@ -1,6 +1,13 @@
 import { Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
 
+interface UpdateReqBody {
+  name?: string;
+  order?: number;
+  active?: boolean;
+  coverImageUrl?: string;
+}
+
 export class CategoryController {
   // Public - List ordered active categories
   async index(req: Request, res: Response) {
@@ -30,13 +37,16 @@ export class CategoryController {
   }
 
   async create(req: Request, res: Response) {
-    const { name, order, coverImageUrl } = req.body;
-    if (!name) return res.status(400).json({ error: 'Nome obrigatório' });
+    const body = req.body as UpdateReqBody;
+    const { name, order, coverImageUrl } = body;
+
+    if (!name || typeof name !== 'string')
+      return res.status(400).json({ error: 'Nome obrigatório' });
 
     try {
       const category = await prisma.category.create({
         data: {
-          name: String(name),
+          name,
           order: Number(order) || 99,
           coverImageUrl: typeof coverImageUrl === 'string' ? coverImageUrl : undefined,
         },
@@ -51,14 +61,19 @@ export class CategoryController {
     const { id } = req.params;
     const { name, order, active, coverImageUrl } = req.body;
 
+    const safeName = typeof name === 'string' ? name : undefined;
+    const safeOrder = order !== undefined ? Number(order) : undefined;
+    const safeActive = active !== undefined ? Boolean(active) : undefined;
+    const safeCover = typeof coverImageUrl === 'string' ? coverImageUrl : null;
+
     try {
       const category = await prisma.category.update({
         where: { id },
         data: {
-          name: String(name),
-          order: Number(order) || 0,
-          active: active !== undefined ? Boolean(active) : undefined,
-          coverImageUrl: typeof coverImageUrl === 'string' ? coverImageUrl : null,
+          name: safeName,
+          order: safeOrder,
+          active: safeActive,
+          coverImageUrl: safeCover,
         },
       });
       return res.json(category);
