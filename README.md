@@ -1,5 +1,7 @@
 # Junior Lima Studio ✂️
 
+[![Live Demo](https://img.shields.io/badge/demo-online-green.svg?style=for-the-badge&logo=firebase)](https://juniorlimastudio.com.br/)
+
 > **Uma plataforma full-stack de gestão para estúdios de beleza, focada em experiência "Luxury" e performance mobile.**
 
 ![Project Banner](docs/assets/banner.png)
