@@ -158,7 +158,7 @@ export function AppointmentForm({ initialDate, onCancel, onSuccess }: Appointmen
         <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
           <Scissors size={16} /> Serviços
         </label>
-        <div className="grid grid-cols-1 gap-2 max-h-60 overflow-y-auto">
+        <div className="grid grid-cols-1 gap-2 max-h-60 overflow-y-auto scrollbar-light">
           {services.map(service => {
             const isSelected = selectedServices.includes(service.id);
             return (
@@ -169,18 +169,18 @@ export function AppointmentForm({ initialDate, onCancel, onSuccess }: Appointmen
                             flex items-center justify-between p-3 rounded-sm border cursor-pointer transition-all
                             ${
                               isSelected
-                                ? 'bg-midnight-900 border-midnight-900 text-white shadow-md'
-                                : 'bg-white border-gray-200 text-midnight-900 hover:border-gold-500/50'
+                                ? 'bg-gold-50 border-gold-500 text-midnight-900 shadow-xs'
+                                : 'bg-white border-gray-200 text-midnight-900 hover:border-gold-500/50 hover:bg-gold-50/30'
                             }
                         `}
               >
                 <div>
                   <p className="font-medium text-sm">{service.name}</p>
-                  <p className={`text-xs ${isSelected ? 'text-gray-400' : 'text-gray-500'}`}>
+                  <p className={`text-xs ${isSelected ? 'text-gold-700' : 'text-gray-500'}`}>
                     {service.durationMin} min
                   </p>
                 </div>
-                <p className={`font-medium ${isSelected ? 'text-gold-500' : 'text-midnight-900'}`}>
+                <p className={`font-medium ${isSelected ? 'text-gold-600' : 'text-midnight-900'}`}>
                   R$ {service.price}
                 </p>
               </div>
