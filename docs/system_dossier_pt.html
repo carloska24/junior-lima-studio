@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dossiê de Arquitetura - Junior Lima Studio</title>
+    <style>
+      :root {
+        --color-gold: #d4af37;
+        --color-dark: #0f172a;
+        --color-gray: #f8fafc;
+        --font-main: 'Segoe UI', system-ui, sans-serif;
+      }
+
+      body {
+        font-family: var(--font-main);
+        line-height: 1.6;
+        color: #334155;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 40px;
+        background-color: white;
+      }
+
+      /* Header */
+      header {
+        border-bottom: 2px solid var(--color-gold);
+        padding-bottom: 20px;
+        margin-bottom: 40px;
+      }
+
+      h1 {
+        color: var(--color-dark);
+        font-size: 2.5em;
+        margin: 0 0 10px 0;
+      }
+
+      .meta {
+        display: flex;
+        gap: 20px;
+        color: #64748b;
+        font-size: 0.9em;
+        background: #f1f5f9;
+        padding: 10px 15px;
+        border-radius: 6px;
+        display: inline-flex;
+      }
+
+      .status-badge {
+        background-color: #dcfce7;
+        color: #166534;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-weight: bold;
+      }
+
+      /* Sections */
+      h2 {
+        border-left: 5px solid var(--color-gold);
+        padding-left: 15px;
+        color: var(--color-dark);
+        margin-top: 40px;
+      }
+
+      h3 {
+        color: #475569;
+        margin-top: 25px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      /* Tables - The specific request */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      th {
+        background-color: var(--color-dark);
+        color: var(--color-gold);
+        text-align: left;
+        padding: 12px 15px;
+      }
+
+      td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      tr:nth-child(even) {
+        background-color: #f8fafc;
+      }
+
+      /* Code Blocks */
+      pre {
+        background-color: #1e293b;
+        color: #e2e8f0;
+        padding: 20px;
+        border-radius: 8px;
+        overflow-x: auto;
+        font-family: 'Consolas', monospace;
+        font-size: 0.9em;
+      }
+
+      /* Signature Styles */
+      .signature-block {
+        margin-top: 60px;
+        border: 2px solid var(--color-gold);
+        background: #fdfbf7;
+        padding: 30px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        page-break-inside: avoid;
+      }
+
+      .signature-content {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .dev-label {
+        text-transform: uppercase;
+        font-size: 0.75em;
+        letter-spacing: 2px;
+        color: #856a1b;
+        font-weight: 700;
+      }
+
+      .dev-brand {
+        font-size: 2em;
+        font-weight: 800;
+        color: var(--color-dark);
+        line-height: 1;
+      }
+
+      .dev-author {
+        font-size: 1.1em;
+        color: #475569;
+        margin-top: 5px;
+      }
+
+      .signature-badge {
+        background: var(--color-gold);
+        color: white;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.5em;
+        box-shadow: 0 4px 10px rgba(212, 175, 55, 0.4);
+      }
+
+      /* Print Override */
+      @media print {
+        body {
+          padding: 0;
+        }
+        button {
+          display: none;
+        }
+        .signature-block {
+          break-inside: avoid;
+        }
+      }
+
+      .print-btn {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--color-gold);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      }
+    </style>
+  </head>
+  <body>
+    <button class="print-btn" onclick="window.print()">🖨️ Salvar como PDF</button>
+
+    <header>
+      <h1>Dossiê de Arquitetura do Sistema</h1>
+      <p style="font-size: 1.2em; color: #64748b">Junior Lima Studio</p>
+
+      <div class="meta">
+        <span><strong>Versão:</strong> 1.0.0</span>
+        <span>|</span>
+        <span><strong>Data:</strong> 25/01/2026</span>
+        <span>|</span>
+        <span><strong>Status:</strong> <span class="status-badge">Pronto para Produção</span></span>
+      </div>
+    </header>
+
+    <section>
+      <h2>1. Resumo Executivo</h2>
+      <p>
+        <strong>Junior Lima Studio</strong> é uma aplicação web full-stack para gerenciamento de um
+        estúdio de beleza. Conta com uma Landing Page pública para exibição de portfólio e um Painel
+        Administrativo protegido para gestão do negócio (agendamentos, clientes, financeiro e CMS).
+      </p>
+
+      <h3>Capacidades Principais</h3>
+      <ul>
+        <li>
+          <strong>Cliente Final:</strong> Portfólio otimizado para mobile (estilo Instagram),
+          catálogo de serviços, informações de contato.
+        </li>
+        <li>
+          <strong>Administração:</strong> Gestão de agenda (drag-and-drop), relatórios financeiros,
+          base de clientes.
+        </li>
+        <li>
+          <strong>CMS:</strong> Gerenciamento dinâmico de itens do portfólio, categorias e
+          configurações do estúdio.
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>2. Stack Tecnológica</h2>
+
+      <h3>🎨 Frontend (Cliente & Admin)</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Camada</th>
+            <th>Tecnologia</th>
+            <th>Versão</th>
+            <th>Justificativa</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Core</strong></td>
+            <td>React</td>
+            <td>19.2.0</td>
+            <td>vDOM de alta performance, API de hooks mais recente.</td>
+          </tr>
+          <tr>
+            <td><strong>Build Tool</strong></td>
+            <td>Vite</td>
+            <td>7.2.4</td>
+            <td>HMR extremamente rápido e builds otimizados.</td>
+          </tr>
+          <tr>
+            <td><strong>Linguagem</strong></td>
+            <td>TypeScript</td>
+            <td>5.9.3</td>
+            <td>Tipagem estrita para segurança de código.</td>
+          </tr>
+          <tr>
+            <td><strong>Estilos</strong></td>
+            <td>Tailwind CSS</td>
+            <td>4.0.0</td>
+            <td>Zero-runtime overhead (Engine Oxide).</td>
+          </tr>
+          <tr>
+            <td><strong>Animação</strong></td>
+            <td>Framer Motion</td>
+            <td>12.0.0</td>
+            <td>Animações complexas de gestos (StoryViewer).</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>🛠 Backend (API)</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Camada</th>
+            <th>Tecnologia</th>
+            <th>Versão</th>
+            <th>Justificativa</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Runtime</strong></td>
+            <td>Node.js</td>
+            <td>v20+</td>
+            <td>Ecossistema JavaScript universal.</td>
+          </tr>
+          <tr>
+            <td><strong>Framework</strong></td>
+            <td>Express</td>
+            <td>5.0.0</td>
+            <td>Roteamento minimalista (com suporte async nativo).</td>
+          </tr>
+          <tr>
+            <td><strong>ORM</strong></td>
+            <td>Prisma</td>
+            <td>7.2.0</td>
+            <td>Queries type-safe e migrations.</td>
+          </tr>
+          <tr>
+            <td><strong>Auth</strong></td>
+            <td>JWT / Bcrypt</td>
+            <td>Standard</td>
+            <td>Autenticação stateless segura.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>3. Estrutura de Diretórios</h2>
+
+      <h3>📂 Frontend (/frontend/src)</h3>
+      <pre><code>/frontend/src
+├── /assets         # Assets estáticos (imagens, logos)
+├── /components     # Blocos de UI reutilizáveis
+│   ├── /portfolio  # Específico da Landing Page (StoryViewer)
+│   ├── /ui         # UI Genérica (Button, Modal, Input)
+│   └── /layout     # Layout wrappers (Sidebar, Header)
+├── /contexts       # Estado Global (AuthContext)
+├── /pages          # Visualizações de Rota
+│   ├── /Landing    # Páginas Públicas
+│   └── /Admin      # Dashboard Protegido
+│       ├── /Agenda    
+│       ├── /Portfolio 
+│       └── /Services
+├── /services       # Clientes de API
+└── /types          # Interfaces TypeScript</code></pre>
+
+      <h3>📂 Backend (/backend/src)</h3>
+      <pre><code>/backend/src
+├── /config         # Configuração (Uploads, Auth)
+├── /controllers    # Regra de Negócio
+│   ├── AuthController.ts
+│   ├── UserController.ts
+│   └── AppointmentController.ts
+├── /middleware     # (Auth, Error Handling)
+├── /routes         # Rotas API
+└── server.ts       # Entry Point</code></pre>
+    </section>
+
+    <section>
+      <h2>4. Padrões de Arquitetura Chave</h2>
+
+      <div
+        style="
+          background: #f8fafc;
+          padding: 20px;
+          border-left: 4px solid var(--color-gold);
+          margin-bottom: 20px;
+        "
+      >
+        <h3>1. Modular Monolith (Frontend)</h3>
+        <p>
+          O frontend é estruturado por <strong>domínio de negócio</strong> (/pages/Admin/Agenda) ao
+          invés de apenas por tipo técnico. Isso mantém estilos, componentes e lógica relacionados
+          fisicamente próximos, facilitando a manutenção.
+        </p>
+      </div>
+
+      <div
+        style="
+          background: #f8fafc;
+          padding: 20px;
+          border-left: 4px solid var(--color-gold);
+          margin-bottom: 20px;
+        "
+      >
+        <h3>2. Controller-Service-Repository (Backend)</h3>
+        <p>Separação estrita de responsabilidades:</p>
+        <ul>
+          <li><strong>Rotas:</strong> Definem endpoints HTTP.</li>
+          <li><strong>Controllers:</strong> Validam input e orquestram logica.</li>
+          <li><strong>Prisma:</strong> Atua como Data Access Layer (Repository).</li>
+        </ul>
+      </div>
+
+      <div
+        style="
+          background: #f8fafc;
+          padding: 20px;
+          border-left: 4px solid var(--color-gold);
+          margin-bottom: 20px;
+        "
+      >
+        <h3>3. Design System & Otimização</h3>
+        <p>
+          Uso de <strong>Tailwind v4</strong> com configuração de tokens (Cores, Tipografia) via CSS
+          nativo. Implementação crítica de <strong>Hardware Acceleration</strong> (.transform-gpu)
+          para garantir animações fluidas (60fps) em dispositivos móveis "Luxury".
+        </p>
+      </div>
+    </section>
+
+    <!-- ASSINATURA DO AUTOR -->
+    <div class="signature-block">
+      <div class="signature-content">
+        <div class="dev-label">Desenvolvido por</div>
+        <div class="dev-brand">DevNaPratica</div>
+        <div class="dev-author">Autor: <strong>Carlos Alexandre Duarte Pereira</strong></div>
+      </div>
+      <div class="signature-badge">CA</div>
+    </div>
+
+    <footer
+      style="
+        margin-top: 50px;
+        padding-top: 20px;
+        border-top: 1px solid #e2e8f0;
+        text-align: center;
+        color: #94a3b8;
+        font-size: 0.8em;
+      "
+    >
+      <p>Documento gerado automaticamente por AI Agent | Junior Lima Studio System</p>
+    </footer>
+  </body>
+</html>

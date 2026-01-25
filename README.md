@@ -2,7 +2,7 @@
 
 > **Uma plataforma full-stack de gestão para estúdios de beleza, focada em experiência "Luxury" e performance mobile.**
 
-![Project Banner](https://placehold.co/1200x400/d4af37/ffffff?text=Junior+Lima+Studio+Preview)
+![Project Banner](docs/assets/banner.png)
 _(Substitua este link por um print real da sua Landing Page)_
 
 ## 🚀 Sobre o Projeto
