@@ -262,7 +262,6 @@ export function StoryViewer({
             className="absolute inset-0 z-10"
             onTouchStart={e => {
               const clientX = e.touches[0].clientX;
-              const screenWidth = window.innerWidth;
 
               // Logic for Hold-to-Pause
               if (!isPaused) handleTogglePause(); // Pause on touch down
